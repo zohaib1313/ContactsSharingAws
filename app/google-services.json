@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "5802057376",
+    "project_id": "contactssharing-d144b",
+    "storage_bucket": "contactssharing-d144b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5802057376:android:d997f6fa3c4d28d3c3b3c5",
+        "android_client_info": {
+          "package_name": "lads.contancsharing.www"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5802057376-6mrigic5frogeiumv3bbu1g5j9hb1kt2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lads.contancsharing.www",
+            "certificate_hash": "0b9368826cbb3b83eeb6a2a96f20871938be518a"
+          }
+        },
+        {
+          "client_id": "5802057376-a9u0ukoh2lrjsk9f7ve47r59e7vdl8rp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQQV9tmVzOrQ3k0jriN0VMjoD2bRiAQhk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5802057376-a9u0ukoh2lrjsk9f7ve47r59e7vdl8rp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
