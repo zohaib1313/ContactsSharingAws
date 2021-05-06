@@ -55,7 +55,7 @@ dependencies {
 //pin view otp https://github.com/GoodieBag/Pinview
     implementation 'com.github.GoodieBag:Pinview:v1.4'
 
-///contacts list alphabet search
+///contacts list alphabet search https://github.com/richimf/Alphabetik
     implementation 'com.github.richimf:Alphabetik:1.0.3'
 
     //circle imageview

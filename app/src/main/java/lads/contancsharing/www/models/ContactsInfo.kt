@@ -7,6 +7,21 @@ class ContactsInfo {
     private var userImage: String? = null
     private var status: String? = null
 
+    constructor(
+        contactId: String?,
+        displayName: String?,
+        phoneNumber: String?,
+        userImage: String?,
+        status: String?
+    ) {
+        this.contactId = contactId
+        this.displayName = displayName
+        this.phoneNumber = phoneNumber
+        this.userImage = userImage
+        this.status = status
+    }
+
+
     @JvmName("getStatus1")
     fun getStatus(): String? {
         return status
