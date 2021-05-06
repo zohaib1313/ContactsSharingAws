@@ -25,7 +25,7 @@ class MainActivity : BaseActivity() {
         setContentView(mBinding.root)
         mFragmentManager = supportFragmentManager
         mBinding.bottomNavigationView.setOnNavigationItemSelectedListener { onBottomNavClick(it) }
-        changeFragment(ContactsFragment.newInstance(0), true)
+        changeFragment(ContactsFragment.newInstance(0), false)
 
 
     }
@@ -36,25 +36,25 @@ class MainActivity : BaseActivity() {
         when (item.itemId) {
             R.id.actionContacts -> {
                 if (activeTabId != R.id.actionContacts) {
-                    changeFragment(ContactsFragment.newInstance(0), true)
+                    changeFragment(ContactsFragment.newInstance(0), false)
                 }
             }
             R.id.actionReceive -> {
                 if (activeTabId != R.id.actionReceive) {
-                    changeFragment(ReceiveFragment.newInstance(0), true)
+                    changeFragment(ReceiveFragment.newInstance(0), false)
                 }
 
             }
             R.id.actionHistory -> {
                 if (activeTabId != R.id.actionHistory) {
-                    changeFragment(HistoryFragment.newInstance(0), true)
+                    changeFragment(HistoryFragment.newInstance(0), false)
 
                 }
             }
             R.id.actionProfile -> {
                 if (activeTabId != R.id.actionProfile) {
 
-                    changeFragment(ProfileFragment.newInstance(0), true)
+                    changeFragment(ProfileFragment.newInstance(0), false)
 
 
                 }

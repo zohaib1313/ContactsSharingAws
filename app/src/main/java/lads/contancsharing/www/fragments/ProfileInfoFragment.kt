@@ -7,16 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.solver.widgets.Helper
 import androidx.fragment.app.FragmentTransaction
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.MainActivity
-import lads.contancsharing.www.databinding.FragmentVerifyOtpBinding
-import lads.contancsharing.www.utils.Helper
+import lads.contancsharing.www.databinding.FragmentLoginBinding
+import lads.contancsharing.www.databinding.FragmentProfileInfoBinding
 
+class ProfileInfoFragment : BaseFragment() {
 
-class VerifyOtpFragment : BaseFragment() {
-
-    lateinit var mBinding: FragmentVerifyOtpBinding
+    lateinit var mBinding: FragmentProfileInfoBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -27,25 +27,23 @@ class VerifyOtpFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = FragmentVerifyOtpBinding.inflate(layoutInflater)
-//        mBinding.btnNext.setOnClickListener {
-//            changeFragment()
-//        }
-        mBinding.btnDone.setOnClickListener {
-            changeFragment(ProfileInfoFragment.newInstance(0),false)
+        mBinding = FragmentProfileInfoBinding.inflate(layoutInflater)
+        mBinding.btnSave.setOnClickListener {
+            lads.contancsharing.www.utils.Helper.startActivity(
+                requireActivity(),
+                Intent(requireContext(), MainActivity::class.java), true
+            )
+            requireActivity().finishAffinity()
+
         }
-
-
-
         lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
-
         return mBinding.root
     }
 
     companion object {
         private val ARG_DATA = "position"
-        fun newInstance(index: Int): VerifyOtpFragment {
-            val fragment = VerifyOtpFragment()
+        fun newInstance(index: Int): ProfileInfoFragment {
+            val fragment = ProfileInfoFragment()
             val args = Bundle()
             args.putInt(ARG_DATA, index)
             fragment.arguments = args

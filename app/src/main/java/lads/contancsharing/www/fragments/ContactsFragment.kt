@@ -7,17 +7,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.MainActivity
+import lads.contancsharing.www.adapters.ContactListRecyclerViewAdapter
 import lads.contancsharing.www.databinding.FragmentContactsBinding
 import lads.contancsharing.www.databinding.FragmentVerifyOtpBinding
+import lads.contancsharing.www.models.ContactsInfo
 import lads.contancsharing.www.utils.Helper
 
 
-class ContactsFragment : BaseFragment() {
+class ContactsFragment : BaseFragment(),
+    ContactListRecyclerViewAdapter.ContactListRecyclerViewAdapterListener {
 
     lateinit var mBinding: FragmentContactsBinding
+    lateinit var adapterContactListRecyclerViewAdapter: ContactListRecyclerViewAdapter
+    var listOfContacts = ArrayList<ContactsInfo>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -32,6 +39,15 @@ class ContactsFragment : BaseFragment() {
 //        mBinding.btnNext.setOnClickListener {
 //            changeFragment()
 //        }
+        adapterContactListRecyclerViewAdapter = ContactListRecyclerViewAdapter(listOfContacts, this)
+        mBinding.rvContacts.layoutManager = LinearLayoutManager(requireContext())
+        mBinding.rvContacts.adapter = adapterContactListRecyclerViewAdapter
+        mBinding.rvContacts.setHasFixedSize(true)
+
+
+
+
+
 
         return mBinding.root
     }
@@ -55,5 +71,9 @@ class ContactsFragment : BaseFragment() {
         mFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         if (needToAddBackstack) mFragmentTransaction.addToBackStack(null)
         mFragmentTransaction.commit()
+    }
+
+    override fun onItemSelected(item: ContactsInfo?) {
+
     }
 }

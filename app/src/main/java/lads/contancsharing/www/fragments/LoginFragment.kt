@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.solver.widgets.Helper
 import androidx.fragment.app.FragmentTransaction
 import lads.contancsharing.www.R
 import lads.contancsharing.www.databinding.FragmentLoginBinding
@@ -27,7 +28,7 @@ class LoginFragment : BaseFragment() {
         mBinding.btnNext.setOnClickListener {
             changeFragment(VerifyOtpFragment.newInstance(0), false)
         }
-
+            lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
         return mBinding.root
     }
 

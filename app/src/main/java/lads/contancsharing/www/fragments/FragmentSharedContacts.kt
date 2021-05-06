@@ -1,22 +1,20 @@
 package lads.contancsharing.www.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.solver.widgets.Helper
 import androidx.fragment.app.FragmentTransaction
 import lads.contancsharing.www.R
-import lads.contancsharing.www.activities.MainActivity
-import lads.contancsharing.www.databinding.FragmentVerifyOtpBinding
-import lads.contancsharing.www.utils.Helper
 
+import lads.contancsharing.www.databinding.FragmentSharedContactsBinding
 
-class VerifyOtpFragment : BaseFragment() {
+class FragmentSharedContacts : BaseFragment() {
 
-    lateinit var mBinding: FragmentVerifyOtpBinding
+    lateinit var mBinding: FragmentSharedContactsBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -27,25 +25,16 @@ class VerifyOtpFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = FragmentVerifyOtpBinding.inflate(layoutInflater)
-//        mBinding.btnNext.setOnClickListener {
-//            changeFragment()
-//        }
-        mBinding.btnDone.setOnClickListener {
-            changeFragment(ProfileInfoFragment.newInstance(0),false)
-        }
-
-
+        mBinding = FragmentSharedContactsBinding.inflate(layoutInflater)
 
         lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
-
         return mBinding.root
     }
 
     companion object {
         private val ARG_DATA = "position"
-        fun newInstance(index: Int): VerifyOtpFragment {
-            val fragment = VerifyOtpFragment()
+        fun newInstance(index: Int): FragmentReceivedContacts {
+            val fragment = FragmentReceivedContacts()
             val args = Bundle()
             args.putInt(ARG_DATA, index)
             fragment.arguments = args
