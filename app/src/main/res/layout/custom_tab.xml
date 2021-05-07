@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/received_contacts_not_selected"
+android:paddingRight="@dimen/_15sdp"
     android:paddingTop="@dimen/_10sdp"
     android:paddingBottom="@dimen/_10sdp"
+    android:paddingLeft="@dimen/_15sdp"
     android:text="Received Contacts"
     android:textColor="@color/black"
     android:textStyle="bold" />

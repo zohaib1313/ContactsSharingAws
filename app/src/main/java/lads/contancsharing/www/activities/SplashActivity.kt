@@ -8,7 +8,7 @@ import lads.contancsharing.www.databinding.ActivitySplashBinding
 import lads.contancsharing.www.utils.AppConstant
 
 
-class SplashActivity :AppCompatActivity() {
+class SplashActivity :BaseActivity() {
 
     lateinit var mBinding: ActivitySplashBinding
     override fun onCreate(savedInstanceState: Bundle?) {

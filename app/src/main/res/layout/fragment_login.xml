@@ -89,7 +89,9 @@
 
 
         <com.google.android.material.button.MaterialButton
-            android:layout_marginBottom="@dimen/_30sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             android:id="@+id/btnNext"
             style="@style/RoundedButtonBlue"
             android:layout_width="match_parent"

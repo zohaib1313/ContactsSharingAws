@@ -102,7 +102,9 @@ android:id="@+id/rlOtp"
         style="@style/RoundedButtonBlue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-android:layout_marginBottom="@dimen/_30sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
         android:text="@string/done" />
 
 
