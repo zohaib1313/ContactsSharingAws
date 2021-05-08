@@ -16,4 +16,8 @@
     <string name="name">Name</string>
     <string name="danny_would_like_to_share_contacts_with_you">Danny would like to share contacts with you</string>
     <string name="save">Save</string>
+    <string name="shared_contacts">Shared Contacts</string>
+    <string name="received_contacts">Received Contacts</string>
+    <string name="your_name">Your Name</string>
+    <string name="profile_info">Profile Info</string>
 </resources>

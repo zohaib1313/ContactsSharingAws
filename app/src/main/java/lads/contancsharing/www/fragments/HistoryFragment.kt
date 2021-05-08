@@ -1,7 +1,6 @@
 package lads.contancsharing.www.fragments
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,134 +26,57 @@ class HistoryFragment : BaseFragment() {
     lateinit var mBinding: FragmentHistoryBinding
     var myViewPager2: ViewPager2? = null
     var viewPagerHistoryAdapter: ViewPagerHistoryAdapter? = null
-
-
+    lateinit var tabSelected: TextView
+    lateinit var tabNotSelected: TextView
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
     }
 
-    var activeTabId = 0;
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentHistoryBinding.inflate(layoutInflater)
-//        mBinding.btnNext.setOnClickListener {
-//            changeFragment()
-//        }
-        // setupViewPager()
-        //  setSelectedTab(0)
-        mBinding.btnReceivedContacts.setOnClickListener {
-            if (activeTabId != 0) {
-                activeTabId = 0
-                checkActiveTab()
-            }
-        }
-        mBinding.btnSharedContacts.setOnClickListener {
-            if (activeTabId != 1) {
-                activeTabId = 1
-                checkActiveTab()
-            }
-        }
+
+        tabSelected =
+            LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab, null) as TextView
+        tabSelected.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+        tabSelected.background = (ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.selected
+        ));
+
+        tabNotSelected =
+            LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab, null) as TextView
+        tabNotSelected.setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
+        tabNotSelected.background = (ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.not_selected
+        ));
+
+        setupViewPager()
+        setSelectedTab(0)
+
         return mBinding.root
 
     }
 
-    private fun checkActiveTab() {
-        if (activeTabId == 0) {
-            mBinding.btnReceivedContacts.background =
-                (ContextCompat.getDrawable(requireContext(), R.drawable.received_contacts_selected))
-            mBinding.btnReceivedContacts.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.white
-                )
-            )
 
-            mBinding.btnSharedContacts.background =
-                (ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.shared_contacts_not_selected
-                ))
-            mBinding.btnSharedContacts.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.black
-                )
-            )
-            changeFragment(FragmentReceivedContacts.newInstance(0), false)
+    private fun setSelectedTab(selectedTab: Int) {
+        if (selectedTab == 0) {
+            mBinding.tabLayout.getTabAt(0)?.customView = tabSelected
+            mBinding.tabLayout.getTabAt(1)?.customView = tabNotSelected
+            tabSelected.text="Received Contacts"
+            tabNotSelected.text="Shared Contacts"
 
         } else {
-            mBinding.btnReceivedContacts.background =
-                (ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.shared_contacts_not_selected
-                ))
-            mBinding.btnReceivedContacts.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.black
-                )
-            )
-
-            mBinding.btnSharedContacts.background =
-                (ContextCompat.getDrawable(requireContext(), R.drawable.received_contacts_selected))
-            mBinding.btnSharedContacts.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.white
-                )
-            )
-            changeFragment(FragmentSharedContacts.newInstance(0), false)
+            mBinding.tabLayout.getTabAt(1)?.customView = tabSelected
+            mBinding.tabLayout.getTabAt(0)?.customView = tabNotSelected
         }
 
     }
-
-
-//    private fun setSelectedTab(selectedTab: Int) {
-//        if(selectedTab==0){
-//            val tabOne =
-//                LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab, null) as TextView
-//            tabOne.text = "Received Contacts"
-//            tabOne.background = (ContextCompat.getDrawable(
-//                requireContext(),
-//                R.drawable.received_contacts_not_selected
-//            ));
-//            mBinding.tabLayout.getTabAt(0)?.customView = tabOne
-//
-//
-//            val tabTwo =
-//                LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab, null) as TextView
-//            tabTwo.text = "Shared Contacts"
-//            tabTwo.setTextColor(ContextCompat.getColor(requireContext(),R.color.white));
-//            tabTwo.background = (ContextCompat.getDrawable(
-//                requireContext(),
-//                R.drawable.shared_contacts_selected
-//            ));
-//            mBinding.tabLayout.getTabAt(1)?.customView = tabTwo
-//
-//
-//
-//
-//        }else{
-//
-//        }
-//
-//    }
-//
-//    private fun createTabIcons() {
-//        val tabOne =
-//            LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab, null) as TextView
-//        tabOne.text = "Received Contacts"
-//        tabOne.background = (ContextCompat.getDrawable(
-//            requireContext(),
-//            R.drawable.received_contacts_not_selected
-//        ));
-//        mBinding.tabLayout.getTabAt(0)?.customView = tabOne
-//
-//
-//    }
 
 
     companion object {
@@ -168,45 +90,68 @@ class HistoryFragment : BaseFragment() {
         }
     }
 
-//    private fun setupViewPager() {
+    private fun setupViewPager() {
+
+
+        val listOfFragments = ArrayList<FragmentsTitleFrag>()
+
+        listOfFragments.add(FragmentsTitleFrag("Received Contacts", FragmentReceivedContacts()))
+
+        listOfFragments.add(FragmentsTitleFrag("Shared Contacts", FragmentSharedContacts()))
+
+
+
+        myViewPager2 = mBinding.viewPager
+        viewPagerHistoryAdapter =
+            ViewPagerHistoryAdapter(requireFragmentManager(), lifecycle, listOfFragments)
+        myViewPager2!!.adapter = viewPagerHistoryAdapter
+
+        TabLayoutMediator(mBinding.tabLayout, myViewPager2!!,
+            TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+                tab.text = listOfFragments[position].titleFrag
+
+
+            }).attach()
 //
-//
-//        val listOfFragments = ArrayList<FragmentsTitleFrag>()
-//
-//        listOfFragments.add(FragmentsTitleFrag("Received Contacts", FragmentReceivedContacts()))
-//
-//        listOfFragments.add(FragmentsTitleFrag("Shared Contacts", FragmentSharedContacts()))
-//
-//
-//
-//        myViewPager2 = mBinding.viewPager
-//        viewPagerHistoryAdapter =
-//            ViewPagerHistoryAdapter(requireFragmentManager(), lifecycle, listOfFragments)
-//        myViewPager2!!.adapter = viewPagerHistoryAdapter
-////        TabLayoutMediator(mBinding.tabLayout, myViewPager2!!,
-////            TabLayoutMediator.TabConfigurationStrategy { tab, position ->
-////                tab.text = listOfFragments[position].titleFrag
-////
-////
-////            }).attach()
-//        myViewPager2!!.isUserInputEnabled = false
-//
-////        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-////            override fun onTabSelected(tab: TabLayout.Tab?) {
-////                Log.d("taaag", "tabselected")
-////            }
-////
-////            override fun onTabUnselected(tab: TabLayout.Tab?) {
-////
-////            }
-////
-////            override fun onTabReselected(tab: TabLayout.Tab?) {
-////
-////            }
-////
-////
-////        })
-//    }
+        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                Log.d("taaag", "tabselected")
+                if (tab != null) {
+
+                    if (tab.position == 0) {
+                        tabSelected.text = "Received Contacts"
+                        tabNotSelected.text = "Shared Contacts"
+
+                    } else {
+                        tabSelected.text = "Shared Contacts"
+                        tabNotSelected.text = "Received Contacts"
+                    }
+                    tab.customView = tabSelected
+                }
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+                if (tab != null) {
+//                    if(tab.position==0){
+//                        tabSelected.text="Received Contacts"
+//                    }else{
+//                        tabSelected.text="Shared Contacts"
+//                    }
+                    tab.customView = tabNotSelected
+
+                }
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+
+        })
+    }
 
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {
         val mFragmentTransaction: FragmentTransaction =

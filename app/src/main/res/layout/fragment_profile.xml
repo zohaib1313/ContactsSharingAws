@@ -10,7 +10,7 @@
         android:id="@+id/circleImageView"
         android:layout_width="@dimen/_100sdp"
         android:layout_height="@dimen/_100sdp"
-        android:src="@color/app_color_gray"
+        android:src="@drawable/eclipse"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,10 +30,10 @@
         android:src="@drawable/icon_camera"
         app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
         app:layout_constraintEnd_toEndOf="@+id/circleImageView"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
         app:layout_constraintTop_toTopOf="@+id/circleImageView"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.95" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -86,13 +86,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.2" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55" />
-
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="@dimen/_16sdp"
@@ -130,25 +123,27 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <ImageView
+        android:id="@+id/imageView5"
         android:layout_width="0dp"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:layout_marginEnd="@dimen/_30sdp"
         android:layout_marginRight="@dimen/_30sdp"
         android:src="@color/app_color_gray"
-        app:layout_constraintBottom_toTopOf="@+id/guideline7"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6" />
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="@dimen/_16sdp"
         android:layout_height="@dimen/_16sdp"
-        android:src="@drawable/contact_book"
+        android:src="@drawable/call"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="@+id/guideline7" />
+        app:layout_constraintTop_toTopOf="@+id/textView5" />
 
     <TextView
+        android:layout_marginTop="@dimen/_20sdp"
         android:id="@+id/textView5"
         style="@style/AppTextViewBold"
         android:layout_width="0dp"
@@ -160,7 +155,7 @@
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/guideline7" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
         style="@style/AppTextViewNormal"
@@ -174,4 +169,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <ImageView
+        android:layout_marginEnd="@dimen/_30sdp"
+        android:layout_marginRight="@dimen/_30sdp"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:src="@color/app_color_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,7 +37,6 @@ class VerifyOtpFragment : BaseFragment() {
 
 
 
-        lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
 
         return mBinding.root
     }

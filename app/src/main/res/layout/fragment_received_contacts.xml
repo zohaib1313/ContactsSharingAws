@@ -1,14 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.FragmentReceivedContacts">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="horizontal"
+        android:padding="@dimen/_8sdp">
 
-</FrameLayout>
+        <!-- You can use a RecyclerView or another "List" instead -->
+        <!--        <androidx.recyclerview.widget.RecyclerView-->
+        <!--            android:id="@+id/rvContacts"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:scrollbarStyle="outsideOverlay"-->
+        <!--            tools:listitem="@layout/row_receive_contacts_save" />-->
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+                <include layout="@layout/row_receive_contacts_save" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+        <com.alphabetik.Alphabetik
+            android:id="@+id/alphSectionIndex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="3dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

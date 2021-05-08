@@ -1,108 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_8sdp"
     android:layout_marginBottom="@dimen/_16sdp"
-    android:padding="@dimen/_8sdp">
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/ivReceiveRow"
-        android:layout_width="@dimen/_45sdp"
-        android:layout_height="@dimen/_45sdp"
-        android:src="@color/app_color_gray" />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/ivReceiveRow"
-        android:layout_toRightOf="@id/ivReceiveRow">
 
-        <LinearLayout
-            android:id="@+id/lnrContent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        android:padding="@dimen/_8sdp">
 
-            <TextView
-                style="@style/AppTextViewBold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:maxLines="1"
-                android:paddingStart="@dimen/_4sdp"
-                android:paddingLeft="@dimen/_4sdp"
-                android:text="@string/name"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_14sdp"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                style="@style/AppTextViewNormal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_2sdp"
-                android:gravity="start"
-                android:maxLines="1"
-                android:paddingStart="@dimen/_4sdp"
-                android:paddingLeft="@dimen/_4sdp"
-                android:text="+123456789"
-                android:textColor="@color/black"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                style="@style/AppTextViewNormal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_2sdp"
-                android:gravity="start"
-                android:maxLines="1"
-                android:paddingStart="@dimen/_4sdp"
-                android:paddingLeft="@dimen/_4sdp"
-                android:text="@string/danny_would_like_to_share_contacts_with_you"
-                android:textColor="@color/black"
-                tools:ignore="RtlSymmetry" />
-        </LinearLayout>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivReceiveRow"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:src="@drawable/eclipse" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lnrContent"
-            android:layout_marginTop="@dimen/_8sdp">
+            android:layout_toEndOf="@id/ivReceiveRow"
+            android:layout_toRightOf="@id/ivReceiveRow">
 
-            <TextView
-                android:id="@+id/btnAccept"
-                style="@style/RoundedButtonStrokeBlue"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/lnrContent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_16sdp"
-                android:paddingTop="@dimen/_4sdp"
-                android:paddingEnd="@dimen/_16sdp"
-                android:paddingBottom="@dimen/_4sdp"
-                android:text="Accept"
-                app:cornerRadius="@dimen/_12sdp" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/btnReject"
-                style="@style/RoundedButtonStrokeBlack"
-                android:layout_width="wrap_content"
+                <TextView
+                    style="@style/AppTextViewBold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:paddingLeft="@dimen/_4sdp"
+                    android:text="@string/name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sdp"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    style="@style/AppTextViewNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:paddingLeft="@dimen/_4sdp"
+                    android:text="+123456789"
+                    android:textColor="@color/black"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    style="@style/AppTextViewNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/_4sdp"
+                    android:paddingLeft="@dimen/_4sdp"
+                    android:text="@string/danny_would_like_to_share_contacts_with_you"
+                    android:textColor="@color/black"
+                    tools:ignore="RtlSymmetry" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_16sdp"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:layout_toEndOf="@id/btnAccept"
-                android:layout_toRightOf="@id/btnAccept"
-                android:paddingStart="@dimen/_16sdp"
-                android:paddingTop="@dimen/_4sdp"
-                android:paddingEnd="@dimen/_16sdp"
-                android:paddingBottom="@dimen/_4sdp"
-                android:text="Decline"
-                app:cornerRadius="@dimen/_12sdp" />
+                android:layout_below="@id/lnrContent"
+                android:layout_marginTop="@dimen/_8sdp">
+
+                <TextView
+                    android:id="@+id/btnAccept"
+                    style="@style/RoundedButtonStrokeBlue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/_16sdp"
+                    android:paddingTop="@dimen/_4sdp"
+                    android:paddingEnd="@dimen/_16sdp"
+                    android:paddingBottom="@dimen/_4sdp"
+                    android:text="Accept"
+                    app:cornerRadius="@dimen/_12sdp" />
+
+                <TextView
+                    android:id="@+id/btnReject"
+                    style="@style/RoundedButtonStrokeBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:layout_toEndOf="@id/btnAccept"
+                    android:layout_toRightOf="@id/btnAccept"
+                    android:paddingStart="@dimen/_16sdp"
+                    android:paddingTop="@dimen/_4sdp"
+                    android:paddingEnd="@dimen/_16sdp"
+                    android:paddingBottom="@dimen/_4sdp"
+                    android:text="Decline"
+                    app:cornerRadius="@dimen/_12sdp" />
+
+            </RelativeLayout>
+
 
         </RelativeLayout>
 
 
     </RelativeLayout>
-
-
-</RelativeLayout>
+</androidx.cardview.widget.CardView>

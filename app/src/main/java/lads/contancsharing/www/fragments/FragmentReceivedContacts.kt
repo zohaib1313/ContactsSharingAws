@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.constraintlayout.solver.widgets.Helper
 import androidx.fragment.app.FragmentTransaction
 import lads.contancsharing.www.R
-import lads.contancsharing.www.databinding.FragmentLoginBinding
 import lads.contancsharing.www.databinding.FragmentReceivedContactsBinding
+
 
 class FragmentReceivedContacts : BaseFragment() {
 
