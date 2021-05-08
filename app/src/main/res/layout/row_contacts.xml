@@ -19,11 +19,11 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivContact"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="@dimen/_4sdp"
+        android:layout_margin="@dimen/_8sdp"
         android:layout_toEndOf="@+id/radioBtnSelect"
         android:layout_toRightOf="@+id/radioBtnSelect"
         android:src="@drawable/eclipse"/>

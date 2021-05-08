@@ -26,8 +26,6 @@ class HistoryFragment : BaseFragment() {
     lateinit var mBinding: FragmentHistoryBinding
     var myViewPager2: ViewPager2? = null
     var viewPagerHistoryAdapter: ViewPagerHistoryAdapter? = null
-    lateinit var tabSelected: TextView
-    lateinit var tabNotSelected: TextView
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
@@ -40,21 +38,6 @@ class HistoryFragment : BaseFragment() {
     ): View {
         mBinding = FragmentHistoryBinding.inflate(layoutInflater)
 
-        tabSelected =
-            LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab, null) as TextView
-        tabSelected.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-        tabSelected.background = (ContextCompat.getDrawable(
-            requireContext(),
-            R.drawable.selected
-        ));
-
-        tabNotSelected =
-            LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab, null) as TextView
-        tabNotSelected.setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
-        tabNotSelected.background = (ContextCompat.getDrawable(
-            requireContext(),
-            R.drawable.not_selected
-        ));
 
         setupViewPager()
         setSelectedTab(0)
@@ -65,17 +48,16 @@ class HistoryFragment : BaseFragment() {
 
 
     private fun setSelectedTab(selectedTab: Int) {
-        if (selectedTab == 0) {
-            mBinding.tabLayout.getTabAt(0)?.customView = tabSelected
-            mBinding.tabLayout.getTabAt(1)?.customView = tabNotSelected
-            tabSelected.text="Received Contacts"
-            tabNotSelected.text="Shared Contacts"
 
-        } else {
-            mBinding.tabLayout.getTabAt(1)?.customView = tabSelected
-            mBinding.tabLayout.getTabAt(0)?.customView = tabNotSelected
-        }
 
+        mBinding.tabLayout.getTabAt(0)?.view?.background=(ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.selected
+        ))
+        mBinding.tabLayout.getTabAt(1)?.view?.background=(ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.not_selected
+        ))
     }
 
 
@@ -118,28 +100,27 @@ class HistoryFragment : BaseFragment() {
                 Log.d("taaag", "tabselected")
                 if (tab != null) {
 
-                    if (tab.position == 0) {
-                        tabSelected.text = "Received Contacts"
-                        tabNotSelected.text = "Shared Contacts"
+                    tab.view.background = (ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.selected
+                    ))
 
-                    } else {
-                        tabSelected.text = "Shared Contacts"
-                        tabNotSelected.text = "Received Contacts"
-                    }
-                    tab.customView = tabSelected
                 }
 
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-
+                Log.d("taaag", "ta asdfbselected")
                 if (tab != null) {
 //                    if(tab.position==0){
 //                        tabSelected.text="Received Contacts"
 //                    }else{
 //                        tabSelected.text="Shared Contacts"
 //                    }
-                    tab.customView = tabNotSelected
+                    tab.view.background = (ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.not_selected
+                    ))
 
                 }
 

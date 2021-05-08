@@ -20,4 +20,5 @@
     <string name="received_contacts">Received Contacts</string>
     <string name="your_name">Your Name</string>
     <string name="profile_info">Profile Info</string>
+    <string name="edit_profile">Edit Profile</string>
 </resources>

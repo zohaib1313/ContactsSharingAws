@@ -5,15 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:padding="@dimen/_8sdp"
+    android:paddingStart="@dimen/_8sdp"
+    android:paddingTop="@dimen/_8sdp"
+    android:paddingEnd="@dimen/_8sdp"
     tools:context=".fragments.ContactsFragment">
 
     <RelativeLayout
         android:id="@+id/rlHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
 
         <TextView
+            android:textSize="@dimen/_16sdp"
+            android:fontFamily="@font/poppins_semibold"
             style="@style/AppTextViewBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,6 +28,7 @@
             android:textColor="@color/black" />
 
         <ImageView
+            android:layout_centerInParent="true"
             android:layout_width="@dimen/_18sdp"
             android:layout_height="@dimen/_18sdp"
             android:layout_alignParentEnd="true"
@@ -35,7 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rlHeader"
-        android:padding="@dimen/_8sdp">
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/_8sdp">
 
         <!-- You can use a RecyclerView or another "List" instead -->
         <androidx.recyclerview.widget.RecyclerView
@@ -51,7 +58,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:padding="3dp" />
+            android:padding="@dimen/_16sdp"
+            app:itemsColor="@color/app_color_blue" />
 
     </LinearLayout>
 

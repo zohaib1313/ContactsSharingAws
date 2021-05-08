@@ -2,17 +2,22 @@ package lads.contancsharing.www.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alphabetik.Alphabetik
+import com.alphabetik.Alphabetik.SectionIndexClickListener
 import lads.contancsharing.www.R
+import lads.contancsharing.www.adapters.AlphabetIndexAdapter
 import lads.contancsharing.www.adapters.ContactListRecyclerViewAdapter
+import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentContactsBinding
+
 import lads.contancsharing.www.models.ContactsInfo
 
 
@@ -73,18 +78,42 @@ class ContactsFragment : BaseFragment() {
         mBinding.rvContacts.adapter = adapterContactListRecyclerViewAdapter
         mBinding.rvContacts.setHasFixedSize(true)
 
-        val alphabetik = mBinding.alphSectionIndex as Alphabetik
-        alphabetik.onSectionIndexClickListener { view, position, character ->
+      //  setUpAlphaBetIndex()
+
+        val alphabetRv = mBinding.alphSectionIndex
+        alphabetRv.onSectionIndexClickListener(SectionIndexClickListener { view, position, character ->
             val info = " Position = $position Char = $character"
-
-            Toast.makeText(requireContext(), getPositionFromData(character).toString(), Toast.LENGTH_SHORT).show();
-            mBinding.rvContacts.smoothScrollToPosition(getPositionFromData(character))
-        }
-
-
+            Log.d("Tagggg ", "$view,$info")
+           mBinding.rvContacts.smoothScrollToPosition(getPositionFromData(character))
+        })
 
 
         return mBinding.root
+    }
+
+    private fun setUpAlphaBetIndex() {
+        val listOfAlphabets = ArrayList<String>()
+        for (a in 'A'..'Z')
+        {
+            listOfAlphabets.add(a.toString())
+        }
+        listOfAlphabets.add("#")
+        listOfAlphabets.add("#")
+        listOfAlphabets.add("#")
+        listOfAlphabets.add("#")
+
+
+        val alphabetRv = mBinding.alphSectionIndex
+        alphabetRv.layoutManager=LinearLayoutManager(requireContext())
+        val adapter = AlphabetIndexAdapter(requireContext(), listOfAlphabets)
+        alphabetRv.adapter=adapter
+        adapter.notifyDataSetChanged()
+        adapter.setOnItemClickListener(object : OnItemClickListener{
+            override fun onItemClick(view: View, position: Int, character: String) {
+                Log.d("Tagggg",character.toString())
+            }
+
+        })
     }
 
     companion object {
@@ -100,12 +129,10 @@ class ContactsFragment : BaseFragment() {
 
     private fun getPositionFromData(character: String): Int {
         var position = 0;
-
-
         for (contact in listOfContacts) {
             val letter = contact.getDisplayName()?.get(0)
             if (letter != null) {
-                if (letter.equals(character[0],true)) {
+                if (letter.equals(character[0], true)) {
                     return position;
                 }
             }

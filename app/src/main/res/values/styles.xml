@@ -3,17 +3,19 @@
 
 
     <style name="AppTextViewBold">
+        <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="android:gravity">center</item>
         <item name="android:lineSpacingExtra">@dimen/_8sdp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/_14sdp</item>
-        <item name="android:textStyle">bold</item>
+
     </style>
 
     <style name="AppTextViewNormal">
+        <item name="android:fontFamily">@font/poppins_regular</item>
         <item name="android:gravity">center</item>
         <item name="android:lineSpacingExtra">@dimen/_8sdp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/app_color_gray</item>
         <item name="android:textSize">@dimen/_12sdp</item>
     </style>
         <style name="AppTextInputLayout">
@@ -30,7 +32,14 @@
             <item name="android:textColor">@color/black</item>
 
         </style>
+    <style name="FullScreen" parent="@android:style/Theme.Holo.NoActionBar.Fullscreen">
 
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+    </style>
     <style name="RoundedButtonBlue">
         <item name="android:gravity">center</item>
         <item name="android:lineSpacingExtra">@dimen/_8sdp</item>

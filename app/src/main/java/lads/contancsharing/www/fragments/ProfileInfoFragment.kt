@@ -11,7 +11,7 @@ import androidx.constraintlayout.solver.widgets.Helper
 import androidx.fragment.app.FragmentTransaction
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.MainActivity
-import lads.contancsharing.www.databinding.FragmentLoginBinding
+
 import lads.contancsharing.www.databinding.FragmentProfileInfoBinding
 
 class ProfileInfoFragment : BaseFragment() {
@@ -28,7 +28,7 @@ class ProfileInfoFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentProfileInfoBinding.inflate(layoutInflater)
-        mBinding.btnSave.setOnClickListener {
+        mBinding.btnDone.setOnClickListener {
             lads.contancsharing.www.utils.Helper.startActivity(
                 requireActivity(),
                 Intent(requireContext(), MainActivity::class.java), true

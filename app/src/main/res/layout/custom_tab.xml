@@ -1,12 +1,8 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tab"
-  android:gravity="center"
+    style="@style/AppTextViewNormal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/not_selected"
-    android:paddingTop="@dimen/_10sdp"
-    android:paddingBottom="@dimen/_10sdp"
-    android:paddingStart="@dimen/_8sdp"
-    android:paddingEnd="@dimen/_8sdp"
+    android:layout_height="match_parent"
+    android:gravity="center"
     android:text="Received Contacts"
-    android:textColor="@color/black" />
+    android:textSize="@dimen/_12sdp" />

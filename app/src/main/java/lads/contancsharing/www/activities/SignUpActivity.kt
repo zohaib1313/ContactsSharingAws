@@ -18,7 +18,7 @@ class SignUpActivity : BaseActivity() {
         mBinding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        changeFragment(LoginFragment.newInstance(0), true)
+        changeFragment(LoginFragment.newInstance(0), false)
 
     }
 

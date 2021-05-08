@@ -7,10 +7,10 @@
         android:title="Contacts"
         app:showAsAction="always" />
     <item
-        app:showAsAction="always"
         android:id="@+id/actionReceive"
         android:icon="@drawable/recieve"
-        android:title="Receive" />
+        android:title="Receive"
+        app:showAsAction="always" />
     <item
         android:id="@+id/actionHistory"
         android:icon="@drawable/history"

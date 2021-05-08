@@ -7,16 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import lads.contancsharing.www.callBacks.OnItemClickListener
+import lads.contancsharing.www.databinding.RowAlphabetsBinding
 import lads.contancsharing.www.databinding.RowContactsBinding
 import lads.contancsharing.www.models.ContactsInfo
 
 
-class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<ContactsInfo>) :
-    RecyclerView.Adapter<ContactListRecyclerViewAdapter.MyViewHolder>() {
+class AlphabetIndexAdapter(var mContext: Context, var dataList: List<String>) :
+    RecyclerView.Adapter<AlphabetIndexAdapter.MyViewHolder>() {
 
     internal var mOnItemClickListener: OnItemClickListener? = null
 
-    inner class MyViewHolder(val binding: RowContactsBinding) :
+    inner class MyViewHolder(val binding: RowAlphabetsBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         init {
@@ -25,17 +26,13 @@ class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<C
 
         override fun onClick(view: View) {
             if (mOnItemClickListener != null) {
-                dataList[adapterPosition].getContactId()?.let {
-                    mOnItemClickListener?.onItemClick(
-                        view, adapterPosition, it
-                    )
-                }
+                mOnItemClickListener?.onItemClick(view, adapterPosition,dataList[adapterPosition].toString())
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding = RowContactsBinding.inflate(LayoutInflater.from(mContext), parent, false)
+        val binding = RowAlphabetsBinding.inflate(LayoutInflater.from(mContext), parent, false)
         return MyViewHolder(binding)
     }
 
@@ -46,7 +43,7 @@ class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<C
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         with(holder) {
             with(dataList[position]) {
-                binding.displayName.text = getDisplayName()
+                binding.alphabet.text = this.toString()
 //                binding.vChecked.visibility = if (isChecked) View.VISIBLE else View.GONE
             }
         }
