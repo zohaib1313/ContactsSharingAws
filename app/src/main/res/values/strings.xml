@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ContancSharing</string>
+    <string name="app_name">Contacts Sharing</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="contact_sharing_app">Contact Sharing App</string>
@@ -18,7 +18,10 @@
     <string name="save">Save</string>
     <string name="shared_contacts">Shared Contacts</string>
     <string name="received_contacts">Received Contacts</string>
-    <string name="your_name">Your Name</string>
+    <string name="your_name">Your name</string>
     <string name="profile_info">Profile Info</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="error_form_empty_field_of">Please enter %s</string>
+    <string name="erro_contain_country_code">write number without country code</string>
+
 </resources>

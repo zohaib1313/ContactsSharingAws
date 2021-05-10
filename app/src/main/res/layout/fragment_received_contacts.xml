@@ -8,8 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:padding="@dimen/_8sdp">
+        android:orientation="horizontal">
 
         <!-- You can use a RecyclerView or another "List" instead -->
         <!--        <androidx.recyclerview.widget.RecyclerView-->
@@ -22,9 +21,11 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:scrollbars="none">
 
             <LinearLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -81,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:padding="3dp" />
+            android:padding="@dimen/_14sdp" />
 
     </LinearLayout>
 

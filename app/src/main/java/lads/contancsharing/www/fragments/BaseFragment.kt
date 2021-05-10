@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
@@ -13,7 +14,7 @@ import lads.contancsharing.www.utils.SessionManager
 
 abstract class BaseFragment : Fragment(), View.OnClickListener {
 
-    open val TAG: String = "BaseFragment"
+    open val TAG: String = "com.lads.contactsharing"
     open var isAttached = false
 
     lateinit var sessionManager: SessionManager
@@ -25,7 +26,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
 
 
         sessionManager = SessionManager.getInstance(activity)
-     //   isLoggedIn = sessionManager.isLoggedIn
+        //   isLoggedIn = sessionManager.isLoggedIn
     }
 
 
@@ -56,6 +57,12 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
     fun hideNoDataLayout() {
         noDataFoundLayout?.visibility = View.GONE
     }
+
+    fun printLog(string: String) {
+        Log.d(TAG, string)
+    }
+
+
 //
 //    fun logout(user: User) {
 //        sessionManager.clearSession()

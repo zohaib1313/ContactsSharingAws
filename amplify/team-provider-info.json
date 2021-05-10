@@ -1,0 +1,19 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-contactsharingfinal-dev-140254-authRole",
+      "UnauthRoleArn": "arn:aws:iam::547956940052:role/amplify-contactsharingfinal-dev-140254-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::547956940052:role/amplify-contactsharingfinal-dev-140254-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-contactsharingfinal-dev-140254-deployment",
+      "UnauthRoleName": "amplify-contactsharingfinal-dev-140254-unauthRole",
+      "StackName": "amplify-contactsharingfinal-dev-140254",
+      "StackId": "arn:aws:cloudformation:us-east-1:547956940052:stack/amplify-contactsharingfinal-dev-140254/86dde4e0-b16e-11eb-8aac-1226a942184b"
+    },
+    "categories": {
+      "auth": {
+        "contactsharingfinalb46789a2": {}
+      }
+    }
+  }
+}

@@ -11,10 +11,13 @@
     tools:context=".fragments.ContactsFragment">
 
     <RelativeLayout
+        android:paddingEnd="@dimen/_16sdp"
+        android:paddingStart="@dimen/_16sdp"
         android:id="@+id/rlHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:paddingLeft="@dimen/_16sdp">
 
         <TextView
             android:textSize="@dimen/_16sdp"
@@ -65,12 +68,13 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="@dimen/_50sdp"
-        android:layout_height="@dimen/_50sdp"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:layout_margin="@dimen/_5sdp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:background="@drawable/shadow_rect"
-        android:src="@drawable/fillfab_icon" />
+        android:src="@drawable/fab_icon" />
 
 </RelativeLayout>

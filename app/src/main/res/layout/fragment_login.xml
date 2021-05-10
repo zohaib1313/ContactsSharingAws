@@ -6,15 +6,15 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
-    android:windowSoftInputMode="adjustResize">
+    android:windowSoftInputMode="stateHidden|stateHidden">
 
     <RelativeLayout
-        android:paddingTop="@dimen/_8sdp"
-        android:paddingStart="@dimen/_8sdp"
-        android:paddingEnd="@dimen/_8sdp"
-        android:paddingBottom="@dimen/_30sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_30sdp"
         tools:context=".activities.SignUpActivity">
 
         <RelativeLayout
@@ -24,9 +24,11 @@
             android:layout_alignParentTop="true">
 
             <ImageView
+                android:id="@+id/ivBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_arrow_back_ios_24" />
+                android:src="@drawable/ic_baseline_arrow_back_ios_24"
+                android:visibility="gone" />
 
             <TextView
 
@@ -59,40 +61,52 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_200sdp"
             android:layout_below="@id/rlHeader"
-            android:layout_margin="@dimen/_8sdp"
+            android:layout_margin="@dimen/_12sdp"
             android:src="@drawable/ic_otp_bg" />
 
-        <RelativeLayout
+        <LinearLayout
+
             android:id="@+id/rlPhoneNo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ivBg"
-            android:layout_marginStart="@dimen/_30sdp"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:layout_marginEnd="@dimen/_30sdp"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+
             android:gravity="center">
 
-            <View
+            <com.hbb20.CountryCodePicker
                 android:id="@+id/etCountryCode"
-                android:layout_width="@dimen/_26sdp"
-                android:layout_height="@dimen/_26sdp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/place_holer" />
+                style="@style/AppTextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:ccp_arrowSize="@dimen/_12sdp"
+                app:ccp_autoDetectCountry="true"
+                app:ccp_autoDetectLanguage="true"
+                app:ccp_autoFormatNumber="true"
+                app:ccp_countryAutoDetectionPref="SIM_ONLY"
+                app:ccp_defaultLanguage="ENGLISH"
+                app:ccp_defaultNameCode="PK"
+                app:ccp_rememberLastSelection="true"
+                app:ccp_showFlag="true"
+                app:ccp_textSize="@dimen/_12sdp" />
 
             <com.google.android.material.textfield.TextInputEditText
-
                 android:id="@+id/etPhoneNumber"
-                android:layout_width="match_parent"
+                style="@style/AppTextViewNormal"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/etCountryCode"
-                android:layout_toRightOf="@+id/etCountryCode"
+                android:layout_gravity="center"
+                android:textAlignment="viewStart"
+                android:layout_weight="2"
                 android:hint="@string/_123456789"
                 android:imeOptions="actionDone"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:textColor="@color/black"
+                tools:ignore="RtlCompat" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

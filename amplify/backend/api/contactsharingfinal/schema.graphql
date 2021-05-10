@@ -1,0 +1,18 @@
+type UserContactSharing @model {
+    id: ID!
+    name: String!
+    phone: String!
+    image: String!
+    device_token: String!
+    country_code: String
+}
+
+type ContactSharingWith @model {
+    id: ID!
+    user_id: String!
+    file_path: String!
+    share_with: String!
+    file_time: String!
+    status: String
+    user: UserContactSharing! @connection
+}

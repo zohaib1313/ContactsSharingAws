@@ -7,20 +7,20 @@
     android:fillViewport="true"
     tools:context=".fragments.ProfileFragment"
     android:fitsSystemWindows="true"
-    android:windowSoftInputMode="adjustResize">
+    android:windowSoftInputMode="stateHidden|stateHidden">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:paddingBottom="@dimen/_30sdp"
-        android:paddingStart="@dimen/_30sdp"
-        android:paddingEnd="@dimen/_30sdp"
+        android:paddingBottom="@dimen/_35sdp"
+        android:paddingStart="@dimen/_35sdp"
+        android:paddingEnd="@dimen/_35sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
        >
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/circleImageView"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="@dimen/_100sdp"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_120sdp"
             android:src="@drawable/eclipse"
             app:layout_constraintBottom_toTopOf="@+id/guideline5"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.15933232" />
+            app:layout_constraintGuide_percent="0.12" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -72,11 +72,9 @@
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_30sdp"
-            android:layout_marginLeft="@dimen/_30sdp"
             android:src="@drawable/icon_profile"
             app:layout_constraintBottom_toBottomOf="@+id/textView3"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/relativeLayout"
             app:layout_constraintTop_toTopOf="@+id/textView3" />
 
         <EditText
@@ -87,32 +85,29 @@
             android:layout_marginStart="@dimen/_4sdp"
             android:layout_marginLeft="@dimen/_4sdp"
             android:layout_marginTop="@dimen/_16sdp"
-            android:layout_marginEnd="@dimen/_30sdp"
-            android:layout_marginRight="@dimen/_30sdp"
             android:gravity="start"
             android:hint="@string/your_name"
             android:textColor="@color/black"
             android:textSize="@dimen/_12sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="@+id/relativeLayout"
             app:layout_constraintStart_toEndOf="@+id/imageView3"
             app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
         <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:gravity="bottom"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView3"
-            app:layout_constraintStart_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/textView3">
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+           >
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDone"
                 style="@style/RoundedButtonBlue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/done" />
+                android:text="@string/save" />
 
         </RelativeLayout>
 

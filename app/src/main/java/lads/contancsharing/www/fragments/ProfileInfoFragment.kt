@@ -11,8 +11,8 @@ import androidx.constraintlayout.solver.widgets.Helper
 import androidx.fragment.app.FragmentTransaction
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.MainActivity
-
 import lads.contancsharing.www.databinding.FragmentProfileInfoBinding
+
 
 class ProfileInfoFragment : BaseFragment() {
 
@@ -29,6 +29,12 @@ class ProfileInfoFragment : BaseFragment() {
     ): View {
         mBinding = FragmentProfileInfoBinding.inflate(layoutInflater)
         mBinding.btnDone.setOnClickListener {
+            sessionManager.isLoggedIn = true
+
+
+
+
+
             lads.contancsharing.www.utils.Helper.startActivity(
                 requireActivity(),
                 Intent(requireContext(), MainActivity::class.java), true

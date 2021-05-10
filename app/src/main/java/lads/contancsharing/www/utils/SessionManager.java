@@ -43,25 +43,23 @@ public class SessionManager {
         return mSPManager;
     }
 
-//    public boolean isLoggedIn() {
-//        return pref.getBoolean(AppConstant.KEY_IS_LOGGED_IN, false) && getUser() != null;
-//    }
+    public boolean isLoggedIn() {
+        return pref.getBoolean(AppConstant.KEY_IS_LOGGED_IN, false);
+    }
+
+    public void setLoggedIn(boolean isLoggedIn) {
+        editor.putBoolean(AppConstant.KEY_IS_LOGGED_IN, isLoggedIn);
+        // commit changes
+        editor.commit();
+
+    }
 //
-//    public void setLoggedIn(boolean isLoggedIn) {
-//        editor.putBoolean(AppConstant.KEY_IS_LOGGED_IN, isLoggedIn);
-//        // commit changes
-//        editor.commit();
-//
-//    }
-//
-//    public void clearSession() {
-//        editor.clear();
-//        getSPManager().put(AppConstant.IS_VISITED_INTRO, true);
-//        getSPManager().put(AppConstant.KEY_IS_LOGGED_IN, false);
-//        user = null;
-//        editor.commit();
-//
-//    }
+    public void clearSession() {
+        editor.clear();
+        getSPManager().put(AppConstant.IS_VISITED_INTRO, true);
+        editor.commit();
+
+    }
 
 
 //    public void createUserLoginSession(User user) {

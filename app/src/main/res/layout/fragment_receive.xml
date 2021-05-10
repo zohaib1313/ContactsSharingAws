@@ -6,7 +6,8 @@
     android:padding="@dimen/_8sdp"
     tools:context=".fragments.ReceiveFragment">
 
-    <RelativeLayout
+    <RelativeLayout  android:paddingEnd="@dimen/_16sdp"
+        android:paddingStart="@dimen/_16sdp"
         android:id="@+id/rlHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -29,15 +30,18 @@
 <!--        android:layout_height="match_parent"-->
 <!--        android:layout_below="@id/rlHeader" />-->
 
-    <ScrollView
+    <ScrollView android:scrollbars="none"
         android:layout_below="@id/rlHeader"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
       <LinearLayout
+          android:layout_marginTop="@dimen/_8sdp"
           android:orientation="vertical"
           android:layout_width="match_parent"
           android:layout_height="match_parent">
-          <include layout="@layout/row_receive"/>
+
+          <include layout="@layout/row_receive" />
+
           <include layout="@layout/row_receive"/>
           <include layout="@layout/row_receive"/>
           <include layout="@layout/row_receive"/>
