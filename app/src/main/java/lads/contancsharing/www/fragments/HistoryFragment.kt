@@ -99,7 +99,6 @@ class HistoryFragment : BaseFragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 Log.d("taaag", "tabselected")
                 if (tab != null) {
-
                     tab.view.background = (ContextCompat.getDrawable(
                         requireContext(),
                         R.drawable.selected
@@ -112,11 +111,6 @@ class HistoryFragment : BaseFragment() {
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 Log.d("taaag", "ta asdfbselected")
                 if (tab != null) {
-//                    if(tab.position==0){
-//                        tabSelected.text="Received Contacts"
-//                    }else{
-//                        tabSelected.text="Shared Contacts"
-//                    }
                     tab.view.background = (ContextCompat.getDrawable(
                         requireContext(),
                         R.drawable.not_selected

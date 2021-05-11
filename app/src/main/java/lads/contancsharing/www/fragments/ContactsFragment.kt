@@ -1,32 +1,43 @@
 package lads.contancsharing.www.fragments
 
+import android.Manifest
 import android.content.Context
+import android.content.DialogInterface
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alphabetik.Alphabetik.SectionIndexClickListener
 import lads.contancsharing.www.R
-import lads.contancsharing.www.adapters.AlphabetIndexAdapter
 import lads.contancsharing.www.adapters.ContactListRecyclerViewAdapter
 import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentContactsBinding
-
 import lads.contancsharing.www.models.ContactsInfo
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ContactsFragment : BaseFragment() {
 
+    private val PERMISSIONS_REQUEST_WRITE_CONTACTS: Int = 13
     lateinit var mBinding: FragmentContactsBinding
     lateinit var adapterContactListRecyclerViewAdapter: ContactListRecyclerViewAdapter
     var listOfContacts = ArrayList<ContactsInfo>()
-
+    var selectedItemsCount = 0
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
@@ -41,80 +52,69 @@ class ContactsFragment : BaseFragment() {
 //            changeFragment()
 //        }
 
-        listOfContacts.add(ContactsInfo("1", "a", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "b", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "c", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "d", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "e", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "f", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "g", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "h", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "i", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "j", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "k", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "l", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "m", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "b", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "o", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "p", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "q", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "r", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "s", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "t", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "u", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "v", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "w", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "x", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "y", "03030", "asd", "asdfasd"))
-        listOfContacts.add(ContactsInfo("1", "z", "03030", "asd", "asdfasd"))
-
-        listOfContacts.sortedWith(compareBy { it.getDisplayName() })
-
-
 
         adapterContactListRecyclerViewAdapter =
             ContactListRecyclerViewAdapter(requireContext(), listOfContacts)
         mBinding.rvContacts.layoutManager = LinearLayoutManager(requireContext())
         mBinding.rvContacts.adapter = adapterContactListRecyclerViewAdapter
+        adapterContactListRecyclerViewAdapter.setOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClick(view: View, position: Int, character: String) {
+                listOfContacts[position].selected = !listOfContacts[position].selected
+                adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+                checkSelectedContacts()
+            }
+        })
         mBinding.rvContacts.setHasFixedSize(true)
-
-      //  setUpAlphaBetIndex()
-
         val alphabetRv = mBinding.alphSectionIndex
         alphabetRv.onSectionIndexClickListener(SectionIndexClickListener { view, position, character ->
             val info = " Position = $position Char = $character"
             Log.d("Tagggg ", "$view,$info")
-           mBinding.rvContacts.smoothScrollToPosition(getPositionFromData(character))
+            mBinding.rvContacts.smoothScrollToPosition(getPositionFromData(character))
         })
 
+        requestContactPermission()
+        listOfContacts.sortedWith(compareBy { it.name })
+        adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+
+        mBinding.fab.setOnClickListener {
+            if (selectedItemsCount > 0) {
+                val list = ArrayList<ContactsInfo>()
+
+                listOfContacts.forEach {
+                    if (it.selected) {
+                        list.add(it)
+                    }
+                }
+
+                shareSelectedContacts(list)
+            }
+
+        }
 
         return mBinding.root
     }
 
-    private fun setUpAlphaBetIndex() {
-        val listOfAlphabets = ArrayList<String>()
-        for (a in 'A'..'Z')
-        {
-            listOfAlphabets.add(a.toString())
-        }
-        listOfAlphabets.add("#")
-        listOfAlphabets.add("#")
-        listOfAlphabets.add("#")
-        listOfAlphabets.add("#")
+    private fun shareSelectedContacts(contactsToShare: java.util.ArrayList<ContactsInfo>) {
 
-
-        val alphabetRv = mBinding.alphSectionIndex
-        alphabetRv.layoutManager=LinearLayoutManager(requireContext())
-        val adapter = AlphabetIndexAdapter(requireContext(), listOfAlphabets)
-        alphabetRv.adapter=adapter
-        adapter.notifyDataSetChanged()
-        adapter.setOnItemClickListener(object : OnItemClickListener{
-            override fun onItemClick(view: View, position: Int, character: String) {
-                Log.d("Tagggg",character.toString())
-            }
-
-        })
     }
+
+    private fun checkSelectedContacts() {
+        selectedItemsCount = 0
+        listOfContacts.forEach {
+            if (it.selected) {
+                selectedItemsCount++
+            }
+        }
+
+        if (selectedItemsCount > 0) {
+            mBinding.tvTitleContacts.text = "Selected Contacts $selectedItemsCount"
+            mBinding.fab.background = getDrawable(requireContext(), R.drawable.fillfab_icon)
+        } else {
+            mBinding.fab.background = getDrawable(requireContext(), R.drawable.fab_icon)
+            mBinding.tvTitleContacts.text = "Select Contacts"
+        }
+    }
+
 
     companion object {
         private val ARG_DATA = "position"
@@ -130,17 +130,126 @@ class ContactsFragment : BaseFragment() {
     private fun getPositionFromData(character: String): Int {
         var position = 0;
         for (contact in listOfContacts) {
-            val letter = contact.getDisplayName()?.get(0)
-            if (letter != null) {
-                if (letter.equals(character[0], true)) {
-                    return position;
-                }
+            val letter = contact.name[0]
+            if (letter.equals(character[0], true)) {
+                return position;
             }
             position++;
         }
         return position
     }
 
+    private fun getContactsFromContactsList() {
+        val contacts = requireActivity().contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,
+            null,
+            null,
+            null
+        )
+
+        if (contacts != null) {
+            while (contacts.moveToNext()) {
+                val name =
+                    contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                val number =
+                    contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                var image =
+                    contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI))
+
+                if (image.isNullOrEmpty()) {
+                    image = ""
+                }
+                if (name.isNotEmpty() && number.isNotEmpty()) {
+                    val contact = ContactsInfo(name, number, image, false, getRandomDrawable())
+                    listOfContacts.add(contact)
+                }
+            }
+
+
+            val list = listOfContacts.sortedWith(compareBy { it.name })
+            listOfContacts.clear()
+            listOfContacts.addAll(list)
+
+            contacts.close()
+
+        }
+    }
+
+    private fun getRandomDrawable(): Drawable {
+        val r = Random()
+        val red = r.nextInt(255 - 0 + 1) + 0
+        val green = r.nextInt(255 - 0 + 1) + 0
+        val blue = r.nextInt(255 - 0 + 1) + 0
+        val draw = GradientDrawable()
+        draw.shape = GradientDrawable.OVAL
+        draw.setColor(Color.rgb(red, green, blue))
+        return draw
+    }
+
+    fun requestContactPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.WRITE_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        requireActivity(),
+                        Manifest.permission.WRITE_CONTACTS
+                    )
+                ) {
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("Write Contacts permission")
+                    builder.setPositiveButton(android.R.string.ok, null)
+                    builder.setMessage("Please enable access to contacts.")
+                    builder.setOnDismissListener(DialogInterface.OnDismissListener {
+                        requestPermissions(
+                            arrayOf(
+                                Manifest.permission.WRITE_CONTACTS,
+                                Manifest.permission.READ_CONTACTS
+                            ),
+                            PERMISSIONS_REQUEST_WRITE_CONTACTS
+                        )
+                    })
+                    builder.show()
+                } else {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(), arrayOf(
+                            Manifest.permission.WRITE_CONTACTS,
+                            Manifest.permission.READ_CONTACTS
+                        ),
+                        PERMISSIONS_REQUEST_WRITE_CONTACTS
+                    )
+                }
+            } else {
+                getContactsFromContactsList()
+
+            }
+        } else {
+            getContactsFromContactsList()
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSIONS_REQUEST_WRITE_CONTACTS -> if (grantResults[0] === PackageManager.PERMISSION_GRANTED) {
+                getContactsFromContactsList()
+            } else {
+                //not granted
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
 
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {
         val mFragmentTransaction: FragmentTransaction =

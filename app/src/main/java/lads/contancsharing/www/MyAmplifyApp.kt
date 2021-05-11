@@ -16,7 +16,7 @@ class MyAmplifyApp : Application() {
 
             Amplify.addPlugin(AWSApiPlugin())
             Amplify.addPlugin(AWSCognitoAuthPlugin())
-//            Amplify.addPlugin(AWSS3StoragePlugin())
+           Amplify.addPlugin(AWSS3StoragePlugin())
             Amplify.configure(applicationContext)
             Log.i(
                 "com.lads.contactsharing", "Initialized Amplify")

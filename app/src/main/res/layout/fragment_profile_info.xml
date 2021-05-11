@@ -5,17 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".fragments.ProfileFragment"
     android:fitsSystemWindows="true"
-    android:windowSoftInputMode="stateHidden|stateHidden">
+    android:windowSoftInputMode="stateHidden|stateHidden"
+    tools:context=".fragments.ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:paddingBottom="@dimen/_35sdp"
-        android:paddingStart="@dimen/_35sdp"
-        android:paddingEnd="@dimen/_35sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       >
+        android:paddingStart="@dimen/_35sdp"
+        android:paddingEnd="@dimen/_35sdp"
+        android:paddingBottom="@dimen/_35sdp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/circleImageView"
@@ -99,8 +98,7 @@
             android:layout_height="0dp"
             android:gravity="bottom"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
-           >
+            app:layout_constraintTop_toBottomOf="@+id/textView3">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDone"
@@ -110,6 +108,12 @@
                 android:text="@string/save" />
 
         </RelativeLayout>
+
+        <include
+            android:id="@+id/loadingLayout"
+            layout="@layout/loadin_layout"
+          />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

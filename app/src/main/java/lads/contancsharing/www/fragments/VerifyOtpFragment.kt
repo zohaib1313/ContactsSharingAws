@@ -139,10 +139,6 @@ class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
 
                     printLog("id= ${mobileClient.identityId}")
                     printLog("userDetails= ${userStateDetails?.details}")
-
-
-
-
                     changeFragment(ProfileInfoFragment.newInstance(0), true);
 
                 }

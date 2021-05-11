@@ -19,13 +19,14 @@ class SignUpActivity : BaseActivity() {
         setContentView(mBinding.root)
 
 
-//        if (sessionManager.isLoggedIn) {
-//            lads.contancsharing.www.utils.Helper.startActivity(
-//                this@SignUpActivity,
-//                Intent(this@SignUpActivity, MainActivity::class.java),
-//                true
-//            )
-//        }
+        if (sessionManager.isLoggedIn) {
+            lads.contancsharing.www.utils.Helper.startActivity(
+                this@SignUpActivity,
+                Intent(this@SignUpActivity, MainActivity::class.java),
+                true
+            )
+            finishAffinity()
+        }
 
         changeFragment(LoginFragment.newInstance(0), false)
 
