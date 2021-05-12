@@ -33,6 +33,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.amplifyframework.core.Amplify
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -177,10 +178,6 @@ object Helper {
     }
 
 
-
-
-
-
     fun generateSSHKey(context: Context) {
         try {
             val info = context.packageManager.getPackageInfo(
@@ -233,7 +230,6 @@ object Helper {
     }
 
 
-
     fun isDigitOnly(text: CharSequence): Boolean {
         return text.matches("-?\\d+(\\.\\d+)?".toRegex())
     }
@@ -256,6 +252,9 @@ object Helper {
                 lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
+    fun getImageUrl(path: String): String {
+        return "https://contactsharingfinal5a181a706dd146f2be6cfb1b9729140254-dev.s3.amazonaws.com/public/${path.replace("+", "%2B")}"
+    }
 
 
 }

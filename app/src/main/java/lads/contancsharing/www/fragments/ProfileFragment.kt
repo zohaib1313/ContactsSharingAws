@@ -1,41 +1,242 @@
 package lads.contancsharing.www.fragments
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
+import com.amplifyframework.api.graphql.model.ModelMutation
+import com.amplifyframework.core.Amplify
+import com.amplifyframework.datastore.generated.model.UserContactSharing
+import com.bumptech.glide.Glide
+import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.firebase.auth.FirebaseAuth
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.MainActivity
-import lads.contancsharing.www.databinding.FragmentContactsBinding
-import lads.contancsharing.www.databinding.FragmentHistoryBinding
+import lads.contancsharing.www.activities.SignUpActivity
 import lads.contancsharing.www.databinding.FragmentProfileBinding
-import lads.contancsharing.www.databinding.FragmentVerifyOtpBinding
 import lads.contancsharing.www.utils.Helper
+import java.io.File
 
 
 class ProfileFragment : BaseFragment() {
 
     lateinit var mBinding: FragmentProfileBinding
-
+    var currentUser: UserContactSharing? = null
+    var imageKey:String?=null
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
     }
 
+    var filePath: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentProfileBinding.inflate(layoutInflater)
-//        mBinding.btnNext.setOnClickListener {
-//            changeFragment()
-//        }
+        loadingLayout = mBinding.pgb.rlLoading
+        currentUser = sessionManager.user
+        mBinding.btnSignOut.setOnClickListener {
+            signOutUser()
+        }
+
+
+        printLog("user " + currentUser.toString())
+
+
+        currentUser?.let {
+            if (!it.image.isNullOrEmpty()) {
+                printLog(
+                    Helper.getImageUrl(it.image)
+                )
+                Glide.with(requireContext()).load(Helper.getImageUrl(it.image))
+                    .into(mBinding.circleImageView)
+            }
+            mBinding.textView4.setText(it.name.toString())
+            imageKey=it.image
+
+        }
+
+        mBinding.imageView.setOnClickListener {
+            ImagePicker.with(requireActivity())
+                .compress(1024)         //Final image size will be less than 1 MB(Optional)
+                .maxResultSize(
+                    1080,
+                    1080
+                )  //Final image resolution will be less than 1080 x 1080(Optional)
+                .start { resultCode, data ->
+                    when (resultCode) {
+                        Activity.RESULT_OK -> {
+                            //Image Uri will not be null for RESULT_OK
+                            val fileUri = data?.data
+                            mBinding.circleImageView.setImageURI(fileUri)
+                            //You can get File object from intent
+                            val file: File? = ImagePicker.getFile(data)
+                            //You can also get File Path from intent
+                            file?.let {
+                                uploadImage(it)
+                            }
+
+
+                        }
+                        ImagePicker.RESULT_ERROR -> {
+                            Toast.makeText(
+                                requireContext(),
+                                ImagePicker.getError(data),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        else -> {
+                            Toast.makeText(requireContext(), "Task Cancelled", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                }
+        }
+        mBinding.button2.setOnClickListener {
+            mBinding.textView4.isEnabled = !mBinding.textView4.isEnabled
+            if (mBinding.textView4.isEnabled) {
+                mBinding.textView4.requestFocus()
+            }
+
+            if (mBinding.button2.text == "save") {
+                mBinding.button2.text = "update"
+
+
+            } else {
+                hideLoading()
+                mBinding.button2.text = "save"
+            }
+
+
+        }
+
+
 
         return mBinding.root
+    }
+
+    private fun updateProfile() {
+
+
+        if (mBinding.textView4.text.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Name should not be empty", Toast.LENGTH_LONG).show()
+            return
+        }
+        showLoading()
+
+
+
+        currentUser?.let {
+            var userContactSharing = UserContactSharing.builder()
+                .name(mBinding.textView4.text.toString().trim())
+                .phone(it.phone)
+                .deviceToken(it.deviceToken)
+                .countryCode(it.countryCode)
+                .id(it.id)
+                .image(imageKey)
+                .build()
+
+
+            Amplify.API.mutate(
+                ModelMutation.update(userContactSharing),
+                {
+                    printLog("Added  user : ${it}")
+                    if (it.hasErrors()) {
+                        ThreadUtils.runOnUiThread() {
+                            Toast.makeText(
+                                requireContext(), "User updation Failed ", Toast
+                                    .LENGTH_LONG
+                            ).show()
+                        }
+                        return@mutate
+                    } else {
+
+                        ThreadUtils.runOnUiThread() {
+                            Toast.makeText(
+                                requireContext(), "User updated", Toast
+                                    .LENGTH_LONG
+                            ).show()
+                        }
+                        lads.contancsharing.www.utils.Helper.startActivity(
+                            requireActivity(),
+                            Intent(requireContext(), MainActivity::class.java),
+                            true
+                        )
+                        requireActivity().finishAffinity()
+                    }
+                },
+                {
+                    printLog("User update Failed DataStore: ${it.cause}")
+                    ThreadUtils.runOnUiThread() {
+                        Toast.makeText(
+                            requireContext(), "User updation Failed ${it.cause}", Toast
+                                .LENGTH_LONG
+                        ).show()
+                    }
+                }
+            )
+
+
+        }
+
+
+        // userContactSharing?.name=
+
+
+    }
+
+    private fun uploadImage(file: File) {
+showLoading()
+        //delete previous
+        currentUser?.let {
+            Amplify.Storage.remove(it.image,
+                { Log.i("MyAmplifyApp", "Successfully removed: ${it.key}") },
+                { Log.e("MyAmplifyApp", "Remove failure", it) }
+            )
+        }
+        //upload new
+        val profileImagePath =
+            FirebaseAuth.getInstance().currentUser.phoneNumber + "/profileImage" + "/" + file.name
+//        val bucketName = "contactsharing113011-dev."
+//        imageS3Url = "https://"+bucketName+"s3.amazonaws.com/"+"public/"+profileImagePath
+//        imageS3Url= imageS3Url.replace("+","%2B")
+        // Toast.makeText(requireContext(),imageS3Url,Toast.LENGTH_LONG).show()
+        Amplify.Storage.uploadFile(profileImagePath, file,
+            {
+                printLog("image uploaded key= ${it.key}")
+                filePath = null
+                imageKey= it.key
+                hideLoading()
+                updateProfile()
+            },
+            {
+                hideLoading()
+
+                printLog("Upload failed=  ${it.cause}")
+            }
+        )
+
+    }
+
+    private fun signOutUser() {
+        FirebaseAuth.getInstance().signOut()
+        sessionManager.clearSession()
+        Helper.startActivity(
+            requireActivity(),
+            Intent(requireContext(), SignUpActivity::class.java),
+            true
+        )
+
+
     }
 
     companion object {

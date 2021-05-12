@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     android:windowSoftInputMode="stateHidden|stateHidden"
-    tools:context=".fragments.ProfileFragment">
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

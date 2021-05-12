@@ -2,7 +2,7 @@ type UserContactSharing @model {
     id: ID!
     name: String!
     phone: String!
-    image: String!
+    image: String
     device_token: String!
     country_code: String
 }

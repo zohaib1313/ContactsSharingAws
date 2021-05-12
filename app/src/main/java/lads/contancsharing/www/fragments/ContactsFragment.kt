@@ -52,7 +52,7 @@ class ContactsFragment : BaseFragment() {
 //            changeFragment()
 //        }
 
-
+        printLog(sessionManager.isLoggedIn.toString())
         adapterContactListRecyclerViewAdapter =
             ContactListRecyclerViewAdapter(requireContext(), listOfContacts)
         mBinding.rvContacts.layoutManager = LinearLayoutManager(requireContext())
