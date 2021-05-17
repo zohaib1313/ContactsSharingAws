@@ -25,7 +25,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
 
 
 
-        sessionManager = SessionManager.getInstance(activity)
+        sessionManager = SessionManager.getInstance(requireContext().applicationContext)
         //   isLoggedIn = sessionManager.isLoggedIn
     }
 
@@ -59,7 +59,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
     }
 
     fun printLog(string: String) {
-        Log.d(TAG, string)
+        Log.d(TAG, string+"\n")
     }
 
 

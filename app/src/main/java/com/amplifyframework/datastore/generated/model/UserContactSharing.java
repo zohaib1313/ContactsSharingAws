@@ -28,7 +28,7 @@ public final class UserContactSharing implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String name;
   private final @ModelField(targetType="String", isRequired = true) String phone;
-  private final @ModelField(targetType="String", isRequired = true) String image;
+  private final @ModelField(targetType="String") String image;
   private final @ModelField(targetType="String", isRequired = true) String device_token;
   private final @ModelField(targetType="String") String country_code;
   public String getId() {
@@ -155,12 +155,7 @@ public final class UserContactSharing implements Model {
   
 
   public interface PhoneStep {
-    ImageStep phone(String phone);
-  }
-  
-
-  public interface ImageStep {
-    DeviceTokenStep image(String image);
+    DeviceTokenStep phone(String phone);
   }
   
 
@@ -172,16 +167,17 @@ public final class UserContactSharing implements Model {
   public interface BuildStep {
     UserContactSharing build();
     BuildStep id(String id) throws IllegalArgumentException;
+    BuildStep image(String image);
     BuildStep countryCode(String countryCode);
   }
   
 
-  public static class Builder implements NameStep, PhoneStep, ImageStep, DeviceTokenStep, BuildStep {
+  public static class Builder implements NameStep, PhoneStep, DeviceTokenStep, BuildStep {
     private String id;
     private String name;
     private String phone;
-    private String image;
     private String device_token;
+    private String image;
     private String country_code;
     @Override
      public UserContactSharing build() {
@@ -204,16 +200,9 @@ public final class UserContactSharing implements Model {
     }
     
     @Override
-     public ImageStep phone(String phone) {
+     public DeviceTokenStep phone(String phone) {
         Objects.requireNonNull(phone);
         this.phone = phone;
-        return this;
-    }
-    
-    @Override
-     public DeviceTokenStep image(String image) {
-        Objects.requireNonNull(image);
-        this.image = image;
         return this;
     }
     
@@ -221,6 +210,12 @@ public final class UserContactSharing implements Model {
      public BuildStep deviceToken(String deviceToken) {
         Objects.requireNonNull(deviceToken);
         this.device_token = deviceToken;
+        return this;
+    }
+    
+    @Override
+     public BuildStep image(String image) {
+        this.image = image;
         return this;
     }
     
@@ -257,8 +252,8 @@ public final class UserContactSharing implements Model {
       super.id(id);
       super.name(name)
         .phone(phone)
-        .image(image)
         .deviceToken(deviceToken)
+        .image(image)
         .countryCode(countryCode);
     }
     
@@ -273,13 +268,13 @@ public final class UserContactSharing implements Model {
     }
     
     @Override
-     public CopyOfBuilder image(String image) {
-      return (CopyOfBuilder) super.image(image);
+     public CopyOfBuilder deviceToken(String deviceToken) {
+      return (CopyOfBuilder) super.deviceToken(deviceToken);
     }
     
     @Override
-     public CopyOfBuilder deviceToken(String deviceToken) {
-      return (CopyOfBuilder) super.deviceToken(deviceToken);
+     public CopyOfBuilder image(String image) {
+      return (CopyOfBuilder) super.image(image);
     }
     
     @Override

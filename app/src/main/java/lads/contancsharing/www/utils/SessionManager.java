@@ -67,7 +67,7 @@ public class SessionManager {
     public void createUserLoginSession(UserContactSharing user) {
         clearSession();
         // Storing login value as TRUE
-        // editor.putBoolean(AppConstant.KEY_IS_LOGGED_IN, true);
+         editor.putBoolean(AppConstant.KEY_IS_LOGGED_IN, true);
         editor.putBoolean(AppConstant.IS_VISITED_INTRO, true);
         // commit changes
         editor.commit();

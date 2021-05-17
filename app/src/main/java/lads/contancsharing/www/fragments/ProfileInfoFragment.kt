@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.api.graphql.model.ModelMutation
+import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.UserContactSharing
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -167,6 +168,8 @@ class ProfileInfoFragment : BaseFragment() {
         val phoneNumber = firebaseAuth.currentUser.phoneNumber
         val countryCode = phoneNumber.substring(0, 3)
         printLog("country code= " + countryCode)
+
+        // userContactSharing!!.id(phoneNumber)
         userContactSharing!!.name(name)
         userContactSharing!!.phone(firebaseAuth.currentUser.phoneNumber)
         userContactSharing!!.countryCode(countryCode)
@@ -179,39 +182,113 @@ class ProfileInfoFragment : BaseFragment() {
         }
 
 
-        val user = userContactSharing!!.build();
-        Amplify.API.mutate(
-            ModelMutation.create(user),
-            {
-                printLog("Added  with id: ${it.data}")
-                sessionManager.isLoggedIn = true
-                sessionManager.createUserLoginSession(user)
+        val request =
+            ModelQuery.list(UserContactSharing::class.java)
+        Amplify.API.query(request, { response ->
+            if (response.hasData() && !response.hasErrors()) {
 
-                runOnUiThread() {
-                    Toast.makeText(
-                        requireContext(), "User Created", Toast
-                            .LENGTH_LONG
-                    ).show()
+                var userExists = false
+                response.data.items.forEach { userO ->
+                    if (userO.phone.equals(phoneNumber)) {
+                        printLog("user already exists")
+                        userExists = true
+                        userContactSharing!!.id(userO.id)
+                        return@forEach
+                    }
                 }
-                lads.contancsharing.www.utils.Helper.startActivity(
-                    requireActivity(),
-                    Intent(requireContext(), MainActivity::class.java),
-                    true
-                )
-                requireActivity().finishAffinity()
 
 
-            },
-            {
-                printLog("User Add Failed DataStore: ${it.cause}")
-                runOnUiThread() {
-                    Toast.makeText(
-                        requireContext(), "User Creation Failed ${it.cause}", Toast
-                            .LENGTH_LONG
-                    ).show()
+                var user = userContactSharing!!.build()
+                if (userExists) {
+                    printLog("user exists")
+                    Amplify.API.mutate(
+                        ModelMutation.update(user),
+                        {
+                            printLog("Added  user : ${it}")
+                            if (it.hasErrors()) {
+                                runOnUiThread() {
+                                    Toast.makeText(
+                                        requireContext(), "User Creation Failed ", Toast
+                                            .LENGTH_LONG
+                                    ).show()
+                                }
+                                return@mutate
+                            } else {
+
+                                sessionManager.createUserLoginSession(user)
+                                runOnUiThread() {
+                                    Toast.makeText(
+                                        requireContext(), "User Created", Toast
+                                            .LENGTH_LONG
+                                    ).show()
+                                }
+                                lads.contancsharing.www.utils.Helper.startActivity(
+                                    requireActivity(),
+                                    Intent(requireContext(), MainActivity::class.java),
+                                    true
+                                )
+                                requireActivity().finishAffinity()
+                            }
+                        },
+                        {
+                            printLog("User Add Failed DataStore: ${it.cause}")
+                            runOnUiThread() {
+                                Toast.makeText(
+                                    requireContext(), "User Creation Failed ${it.cause}", Toast
+                                        .LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    )
+                } else {
+                    printLog("user does not exists")
+                    Amplify.API.mutate(
+                        ModelMutation.create(user),
+                        {
+                            printLog("Added  with id: ${it.data.toString()}")
+                            if (it.hasErrors()) {
+                                runOnUiThread() {
+                                    Toast.makeText(
+                                        requireContext(), "User Creation Failed ", Toast
+                                            .LENGTH_LONG
+                                    ).show()
+                                }
+                                return@mutate
+                            } else {
+
+                                sessionManager.createUserLoginSession(user)
+
+                                runOnUiThread() {
+                                    Toast.makeText(
+                                        requireContext(), "User Created", Toast
+                                            .LENGTH_LONG
+                                    ).show()
+                                }
+                                lads.contancsharing.www.utils.Helper.startActivity(
+                                    requireActivity(),
+                                    Intent(requireContext(), MainActivity::class.java),
+                                    true
+                                )
+                                requireActivity().finishAffinity()
+                            }
+                        },
+                        {
+                            printLog("User Add Failed DataStore: ${it.cause}")
+                            runOnUiThread() {
+                                Toast.makeText(
+                                    requireContext(), "User Creation Failed ${it.cause}", Toast
+                                        .LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    )
                 }
+
+
+            } else {
+///error
             }
-        )
+        }, {})
 
 
     }
