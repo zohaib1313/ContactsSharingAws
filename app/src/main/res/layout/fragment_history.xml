@@ -10,7 +10,9 @@
     <RelativeLayout
         android:id="@+id/rlHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -28,51 +30,64 @@
     </RelativeLayout>
 
 
-        <com.google.android.material.tabs.TabLayout
-            android:layout_below="@id/rlHeader"
-            android:id="@+id/tabLayout"
-            app:tabIndicatorHeight="0dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            app:tabMode="scrollable">
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@id/rlHeader"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:background="@drawable/not_selected"
+        android:fillViewport="true"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/white"
 
-        </com.google.android.material.tabs.TabLayout>
+        app:tabTextAppearance="@style/MineCustomTabText"
 
-<!--    <LinearLayout-->
-<!--        android:layout_marginTop="@dimen/_4sdp"-->
-<!--        android:id="@+id/lnrButtons"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/rlHeader"-->
-<!--        android:orientation="horizontal">-->
+        app:tabTextColor="@color/black">
 
-<!--        <TextView-->
-<!--            android:id="@+id/btnReceivedContacts"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:background="@drawable/received_contacts_selected"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="@dimen/_8sdp"-->
-<!--            android:text="Received Contacts"-->
-<!--            android:textColor="@color/white" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/btnSharedContacts"-->
-<!--            style="@style/AppTextViewNormal"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="@dimen/_8sdp"-->
-<!--            android:text="Shared Contacts"-->
-<!--            android:textColor="@color/black" />-->
+    </com.google.android.material.tabs.TabLayout>
 
-<!--    </LinearLayout>-->
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/lnrButtons"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_below="@id/rlHeader"-->
+    <!--        android:layout_marginStart="@dimen/_8sdp"-->
+    <!--        android:layout_marginTop="@dimen/_8sdp"-->
+    <!--        android:layout_marginEnd="@dimen/_8sdp"-->
+    <!--        android:background="@drawable/not_selected"-->
+    <!--        android:orientation="horizontal">-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/btnReceivedContacts"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:background="@drawable/selected"-->
+    <!--            android:gravity="center"-->
+    <!--            android:padding="@dimen/_8sdp"-->
+    <!--            android:text="@string/received_contacts"-->
+    <!--            android:textColor="@color/white" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/btnSharedContacts"-->
+    <!--            style="@style/AppTextViewNormal"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:gravity="center"-->
+    <!--            android:padding="@dimen/_8sdp"-->
+    <!--            android:text="@string/shared_contacts"-->
+    <!--            android:textColor="@color/black" />-->
+
+    <!--    </LinearLayout>-->
 
     <androidx.viewpager2.widget.ViewPager2
-
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

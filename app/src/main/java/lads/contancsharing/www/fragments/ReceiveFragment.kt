@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentTransaction
 import lads.contancsharing.www.R
 import lads.contancsharing.www.databinding.FragmentReceiveBinding
 
-
 class ReceiveFragment : BaseFragment() {
 
     lateinit var mBinding: FragmentReceiveBinding

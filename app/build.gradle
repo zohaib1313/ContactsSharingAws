@@ -1,7 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services'  // Google Services plugin
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -10,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "lads.contancsharing.www"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -25,6 +27,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -64,6 +67,38 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
+    // Amplify core dependency
+    implementation 'com.amplifyframework:core:1.17.4'
+    implementation 'com.amplifyframework:aws-api:1.17.4'
+
+    // Support for Java 8 features
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+
+//gson converter
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    //image picker
+    implementation 'com.github.dhaval2404:imagepicker:1.8'
+
+
+    implementation 'com.amplifyframework:aws-storage-s3:1.17.4'
+    implementation 'com.amplifyframework:aws-auth-cognito:1.17.4'
+
+//country code picker
+    implementation 'com.hbb20:ccp:2.3.1'
+
+    //image picker
+    implementation 'com.github.dhaval2404:imagepicker:1.8'
+
+
+    implementation 'com.github.florent37:inline-activity-result-kotlin:1.0.4'
+
+
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+
+    // Declare the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

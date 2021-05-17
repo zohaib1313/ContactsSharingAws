@@ -2,11 +2,14 @@ package lads.contancsharing.www.activities
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
+import com.amplifyframework.core.Amplify
 import com.jaeger.library.StatusBarUtil
 import lads.contancsharing.www.utils.SPManager.getInstance
 
@@ -44,6 +47,23 @@ open class BaseActivity : AppCompatActivity() {
             activity.window.statusBarColor = Color.TRANSPARENT
         } else {
             activity.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        }
+    }
+
+
+    override fun onBackPressed() {
+        if (fragmentManager.backStackEntryCount <= 1) {
+            super.onBackPressed()
+        } else {
+            fragmentManager.popBackStack()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == AWSCognitoAuthPlugin.WEB_UI_SIGN_IN_ACTIVITY_CODE) {
+            Amplify.Auth.handleWebUISignInResponse(data)
         }
     }
 }
