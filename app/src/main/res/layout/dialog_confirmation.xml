@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+
+    app:cardCornerRadius="@dimen/_10sdp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/_10sdp">
+
+        <ImageView
+            android:id="@+id/ivCross"
+            android:layout_margin="@dimen/_4sdp"
+            android:layout_width="@dimen/_14sdp"
+            android:layout_height="@dimen/_14sdp"
+            android:layout_alignParentEnd="true"
+            app:tint="@color/app_color_gray"
+            android:src="@drawable/ic_close_black_24dp" />
+
+        <TextView
+            android:id="@+id/titleHeader"
+            style="@style/AppTextViewBold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivCross"
+            android:text="Are you sure you want to send 7 contacts to"
+            android:textColor="@color/app_color_blue"
+            android:textSize="@dimen/_10sdp" />
+
+        <RelativeLayout
+            android:id="@+id/rlImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/titleHeader">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivContactDp"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/_4sdp"
+                android:src="@drawable/eclipse" />
+
+            <TextView
+                style="@style/AppTextViewNormal"
+                android:id="@+id/tvContact"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="ZA"
+                android:layout_margin="@dimen/_4sdp"
+                android:textSize="@dimen/_9sdp"
+                android:textColor="@color/white"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvName"
+            style="@style/AppTextViewBold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rlImage"
+            android:layout_margin="@dimen/_4sdp"
+            android:text="Abdullah Malik"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10sdp"
+            android:textStyle="bold" />
+
+        <TextView
+
+            android:id="@+id/tvNumber"
+            style="@style/AppTextViewNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvName"
+            android:layout_margin="@dimen/_4sdp"
+            android:text="+92 123123123"
+            android:textColor="@color/app_color_gray"
+            android:textSize="@dimen/_9sdp" />
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvNumber"
+            android:padding="@dimen/_4sdp">
+
+            <TextView
+                android:id="@+id/btnYes"
+                style="@style/RoundedButtonStrokeBlue"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:fontFamily="@font/poppins_regular"
+                android:paddingStart="@dimen/_18sdp"
+                android:paddingTop="@dimen/_4sdp"
+                android:paddingEnd="@dimen/_18sdp"
+                android:paddingBottom="@dimen/_4sdp"
+                android:text="Yes"
+                app:cornerRadius="@dimen/_12sdp" />
+
+            <TextView
+                android:id="@+id/btnNo"
+                style="@style/RoundedButtonStrokeBlack"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:fontFamily="@font/poppins_regular"
+                android:paddingStart="@dimen/_18sdp"
+                android:paddingTop="@dimen/_4sdp"
+                android:paddingEnd="@dimen/_18sdp"
+                android:paddingBottom="@dimen/_4sdp"
+                android:text="No"
+                app:cornerRadius="@dimen/_12sdp" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

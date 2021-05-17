@@ -1,7 +1,7 @@
 package lads.contancsharing.www.fragments
 
+
 import android.Manifest
-import android.app.SearchManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
@@ -13,11 +13,9 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
 import android.view.*
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.constraintlayout.solver.widgets.Helper
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -29,10 +27,7 @@ import lads.contancsharing.www.R
 import lads.contancsharing.www.adapters.ContactListRecyclerViewAdapter
 import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentContactsBinding
-
-
 import lads.contancsharing.www.models.ContactsInfo
-import okhttp3.internal.filterList
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -44,11 +39,22 @@ class ContactsFragment : BaseFragment() {
     lateinit var adapterContactListRecyclerViewAdapter: ContactListRecyclerViewAdapter
     var listOfContacts = ArrayList<ContactsInfo>()
     var listOfAllContacts = ArrayList<ContactsInfo>()
-
+    var listOfFilteredContacts = ArrayList<ContactsInfo>()
     var selectedItemsCount = 0
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        printLog("on resume")
+        listOfContacts.clear()
+
+        listOfContacts.addAll(listOfAllContacts)
+        adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+    checkSelectedContacts()
+
     }
 
     override fun onCreateView(
@@ -78,17 +84,38 @@ class ContactsFragment : BaseFragment() {
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-
-
                 return true
             }
 
         })
 
+        mBinding.searchView.setOnSearchViewListener(object : SimpleSearchView.SearchViewListener {
+            override fun onSearchViewClosed() {
+                listOfContacts.clear()
+                listOfContacts.addAll(listOfAllContacts)
+                checkSelectedContacts()
+                adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+            }
+
+            override fun onSearchViewClosedAnimation() {
+
+            }
+
+            override fun onSearchViewShown() {
+
+            }
+
+            override fun onSearchViewShownAnimation() {
+
+            }
+
+        })
+
+
 
         printLog(sessionManager.isLoggedIn.toString())
         adapterContactListRecyclerViewAdapter =
-            ContactListRecyclerViewAdapter(requireContext(), listOfContacts)
+            ContactListRecyclerViewAdapter(requireContext(), listOfContacts, false)
         mBinding.rvContacts.layoutManager = LinearLayoutManager(requireContext())
         mBinding.rvContacts.adapter = adapterContactListRecyclerViewAdapter
         adapterContactListRecyclerViewAdapter.setOnItemClickListener(object : OnItemClickListener {
@@ -103,7 +130,7 @@ class ContactsFragment : BaseFragment() {
         alphabetRv.onSectionIndexClickListener(SectionIndexClickListener { view, position, character ->
             val info = " Position = $position Char = $character"
             Log.d("Tagggg ", "$view,$info")
-            mBinding.rvContacts.smoothScrollToPosition(getPositionFromData(character))
+            mBinding.rvContacts.scrollToPosition(getPositionFromData(character))
         })
 
         requestContactPermission()
@@ -113,7 +140,7 @@ class ContactsFragment : BaseFragment() {
         mBinding.fab.setOnClickListener {
             if (selectedItemsCount > 0) {
                 val list = ArrayList<ContactsInfo>()
-
+                list.clear()
                 listOfContacts.forEach {
                     if (it.selected) {
                         list.add(it)
@@ -130,7 +157,7 @@ class ContactsFragment : BaseFragment() {
 
     private fun searchFromList(newText: String) {
         showLoading()
-        val listOfFilteredContacts = ArrayList<ContactsInfo>()
+        listOfFilteredContacts.clear()
         listOfAllContacts.forEach { contactsInfo ->
             if (contactsInfo.name.toLowerCase(Locale.ROOT).contains(
                     newText.toLowerCase(Locale.ROOT)
@@ -147,13 +174,19 @@ class ContactsFragment : BaseFragment() {
             listOfContacts.clear()
             listOfContacts.addAll(listOfFilteredContacts)
             adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
-        } else {
-            //no item found
-            Toast.makeText(requireContext(), "No matching contact found", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun shareSelectedContacts(contactsToShare: java.util.ArrayList<ContactsInfo>) {
+
+
+        listOfContacts.forEach{
+            it.selected=false
+        }
+        adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+        selectedItemsCount=0;
+        changeFragment(ContactsShareToFragment(contactsToShare), true)
+
 
     }
 
@@ -314,7 +347,7 @@ class ContactsFragment : BaseFragment() {
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {
         val mFragmentTransaction: FragmentTransaction =
             activity?.supportFragmentManager!!.beginTransaction()
-        mFragmentTransaction.replace(R.id.fragmentContainerLogin, fragment)
+        mFragmentTransaction.replace(R.id.mainActivityFragmentContainer, fragment)
         mFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         if (needToAddBackstack) mFragmentTransaction.addToBackStack(null)
         mFragmentTransaction.commit()

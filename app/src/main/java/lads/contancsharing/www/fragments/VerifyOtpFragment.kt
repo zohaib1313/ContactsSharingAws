@@ -15,8 +15,9 @@ import com.amazonaws.mobile.client.UserStateDetails
 import com.amplifyframework.core.Amplify
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+
+
 import lads.contancsharing.www.R
 import lads.contancsharing.www.databinding.FragmentVerifyOtpBinding
 import java.util.concurrent.TimeUnit

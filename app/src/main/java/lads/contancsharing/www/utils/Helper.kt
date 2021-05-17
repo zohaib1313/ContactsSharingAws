@@ -39,8 +39,10 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 import lads.contancsharing.www.R
+import lads.contancsharing.www.models.ContactsInfo
 
 import java.io.File
+import java.io.IOException
 import java.math.RoundingMode
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -48,6 +50,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 
 object Helper {
@@ -253,8 +256,47 @@ object Helper {
     }
 
     fun getImageUrl(path: String): String {
-        return "https://contactsharingfinal5a181a706dd146f2be6cfb1b9729140254-dev.s3.amazonaws.com/public/${path.replace("+", "%2B")}"
+        return "https://contactsharingfinal5a181a706dd146f2be6cfb1b9729140254-dev.s3.amazonaws.com/public/${
+            path.replace(
+                "+",
+                "%2B"
+            )
+        }"
     }
 
+    fun toCSV(array: Array<String>): String? {
+        var result = ""
+        if (array.size > 0) {
+            val sb = StringBuilder()
+            for (s in array) {
+                sb.append(s.trim { it <= ' ' }).append("\n")
+            }
+            result = sb.deleteCharAt(sb.length - 1).toString()
 
+            // Toast.makeText(requireContext(),result,Toast.LENGTH_LONG).show()
+        }
+        return result
+    }
+
+    @Throws(IOException::class)
+     fun exportDataToCSV(data: ArrayList<ContactsInfo>): String {
+        var csvData = ""
+        for (i in 0 until data.size) {
+
+            val currentLIne: String = data[i].name
+            val number: String = data[i].number
+            val cells = currentLIne.split(";".toRegex()).toTypedArray()
+            csvData += """
+                ${toCSV(cells).toString()}
+
+                """.trimIndent()
+            val cellsNumber = number.split(";".toRegex()).toTypedArray()
+            csvData += """
+                ${toCSV(cellsNumber).toString()}
+
+                """.trimIndent()
+
+        }
+        return csvData
+    }
 }

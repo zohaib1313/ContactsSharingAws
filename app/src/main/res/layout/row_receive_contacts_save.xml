@@ -14,26 +14,69 @@
         android:layout_width="@dimen/_50sdp"
         android:layout_height="@dimen/_50sdp"
         android:layout_margin="@dimen/_8sdp"
-        android:src="@drawable/eclipse"/>
+        android:src="@drawable/eclipse" />
 
-    <TextView
+    <LinearLayout
         android:id="@+id/displayName"
         style="@style/AppTextViewBold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:gravity="start"
-        android:paddingStart="@dimen/_8sdp"
-        android:paddingLeft="@dimen/_8sdp"
-        android:text="Bella Ciana"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_10sdp"
-        tools:ignore="RtlSymmetry" />
+        android:orientation="vertical"
+
+        tools:ignore="RtlSymmetry">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="Bella Ciana"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13sdp"
+            tools:ignore="NestedWeights" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="12 kb"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sdp" />
+
+                <TextView
+                    android:id="@+id/tvDateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_toEndOf="@id/tvSize"
+                    android:text="May 12,2014"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sdp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <ImageView
-
-        android:id="@+id/radioBtnSelect"
+        android:id="@+id/btnViewDownload"
         android:layout_width="@dimen/_14sdp"
         android:layout_height="@dimen/_14sdp"
         android:src="@drawable/ic_check_icon" />
+
+
 </LinearLayout>

@@ -11,14 +11,17 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
+import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lads.contancsharing.www.R
 import lads.contancsharing.www.adapters.ViewPagerHistoryAdapter
+import lads.contancsharing.www.callBacks.ISearch
 import lads.contancsharing.www.databinding.FragmentHistoryBinding
 
 
 import lads.contancsharing.www.models.FragmentsTitleFrag
+import org.greenrobot.eventbus.EventBus
 
 
 class HistoryFragment : BaseFragment() {
@@ -26,6 +29,7 @@ class HistoryFragment : BaseFragment() {
     lateinit var mBinding: FragmentHistoryBinding
     var myViewPager2: ViewPager2? = null
     var viewPagerHistoryAdapter: ViewPagerHistoryAdapter? = null
+    lateinit var iSearch: ISearch
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
@@ -41,6 +45,29 @@ class HistoryFragment : BaseFragment() {
 
         setupViewPager()
         setSelectedTab(0)
+        mBinding.searchView.setTabLayout(mBinding.tabLayout)
+        mBinding.btnSearch.setOnClickListener {
+            mBinding.searchView.showSearch(true)
+        }
+        mBinding.searchView.setOnQueryTextListener(object : SimpleSearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String): Boolean {
+
+// TODO: 5/17/2021 a
+//EventBus.getDefault().post()
+
+                return true
+            }
+
+            override fun onQueryTextCleared(): Boolean {
+
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
+            }
+
+        })
 
         return mBinding.root
 
@@ -49,12 +76,11 @@ class HistoryFragment : BaseFragment() {
 
     private fun setSelectedTab(selectedTab: Int) {
 
-
-        mBinding.tabLayout.getTabAt(0)?.view?.background=(ContextCompat.getDrawable(
+        mBinding.tabLayout.getTabAt(0)?.view?.background = (ContextCompat.getDrawable(
             requireContext(),
             R.drawable.selected
         ))
-        mBinding.tabLayout.getTabAt(1)?.view?.background=(ContextCompat.getDrawable(
+        mBinding.tabLayout.getTabAt(1)?.view?.background = (ContextCompat.getDrawable(
             requireContext(),
             R.drawable.not_selected
         ))

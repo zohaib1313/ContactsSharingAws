@@ -5,30 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/_8sdp"
-    tools:context=".fragments.HistoryFragment">
+    android:paddingTop="@dimen/_8sdp"
+    android:paddingEnd="@dimen/_8sdp"
+    tools:context=".fragments.HistoryFragment"
+    tools:ignore="RtlSymmetry">
 
     <RelativeLayout
         android:id="@+id/rlHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/_8sdp"
-        android:paddingEnd="@dimen/_8sdp">
+        android:layout_alignParentTop="true"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingEnd="@dimen/_16sdp">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <TextView
+
+            android:id="@+id/tvTitleContacts"
+            style="@style/AppTextViewBold"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_baseline_arrow_back_ios_24" />
+            android:layout_toStartOf="@+id/btnSearch"
+            android:fontFamily="@font/poppins_semibold"
+            android:gravity="start"
+            android:text="@string/select_contact"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16sdp" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/btnSearch"
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_18sdp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
             android:src="@drawable/icon_search" />
     </RelativeLayout>
 
+    <com.ferfalk.simplesearchview.SimpleSearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_4sdp" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"

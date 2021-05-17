@@ -18,7 +18,7 @@ import lads.contancsharing.www.models.ContactsInfo
 import java.util.*
 
 
-class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<ContactsInfo>) :
+class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<ContactsInfo>,var isHideRadioSelection:Boolean) :
     RecyclerView.Adapter<ContactListRecyclerViewAdapter.MyViewHolder>() {
 
     internal var mOnItemClickListener: OnItemClickListener? = null
@@ -26,7 +26,12 @@ class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<C
     inner class MyViewHolder(val binding: RowContactsBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
+
+
         init {
+        if(isHideRadioSelection){
+            binding.radioBtnSelect.visibility=View.INVISIBLE
+        }
             binding.root.setOnClickListener(this)
         }
 
