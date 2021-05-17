@@ -23,5 +23,6 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="error_form_empty_field_of">Please enter %s</string>
     <string name="erro_contain_country_code">write number without country code</string>
+    <string name="prompt_search">hint</string>
 
 </resources>

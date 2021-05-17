@@ -97,6 +97,9 @@ dependencies {
     implementation 'com.github.florent37:inline-activity-result-kotlin:1.0.4'
 
 
+    //appbar https://github.com/Ferfalk/SimpleSearchView
+    implementation 'com.github.Ferfalk:SimpleSearchView:0.2.0'
+
     implementation platform('com.google.firebase:firebase-bom:27.1.0')
 
     // Declare the dependency for the Firebase Authentication library

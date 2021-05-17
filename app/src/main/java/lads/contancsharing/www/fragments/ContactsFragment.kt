@@ -1,6 +1,7 @@
 package lads.contancsharing.www.fragments
 
 import android.Manifest
+import android.app.SearchManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
@@ -11,32 +12,39 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.constraintlayout.solver.widgets.Helper
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alphabetik.Alphabetik.SectionIndexClickListener
+import com.ferfalk.simplesearchview.SimpleSearchView
 import lads.contancsharing.www.R
 import lads.contancsharing.www.adapters.ContactListRecyclerViewAdapter
 import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentContactsBinding
+
+
 import lads.contancsharing.www.models.ContactsInfo
+import okhttp3.internal.filterList
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class ContactsFragment : BaseFragment() {
-
+    private var isSearchOn = false
     private val PERMISSIONS_REQUEST_WRITE_CONTACTS: Int = 13
     lateinit var mBinding: FragmentContactsBinding
     lateinit var adapterContactListRecyclerViewAdapter: ContactListRecyclerViewAdapter
     var listOfContacts = ArrayList<ContactsInfo>()
+    var listOfAllContacts = ArrayList<ContactsInfo>()
+
     var selectedItemsCount = 0
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,9 +56,35 @@ class ContactsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentContactsBinding.inflate(layoutInflater)
-//        mBinding.btnNext.setOnClickListener {
-//            changeFragment()
-//        }
+        loadingLayout = mBinding.loadingLayout.rlLoading
+
+        mBinding.btnSearch.setOnClickListener {
+            mBinding.searchView.showSearch(true)
+        }
+
+        mBinding.searchView.setOnQueryTextListener(object : SimpleSearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String): Boolean {
+
+                searchFromList(newText)
+                return true
+            }
+
+            override fun onQueryTextCleared(): Boolean {
+                hideLoading()
+                listOfContacts.clear()
+                listOfContacts.addAll(listOfAllContacts)
+                adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+
+
+                return true
+            }
+
+        })
+
 
         printLog(sessionManager.isLoggedIn.toString())
         adapterContactListRecyclerViewAdapter =
@@ -92,6 +126,31 @@ class ContactsFragment : BaseFragment() {
         }
 
         return mBinding.root
+    }
+
+    private fun searchFromList(newText: String) {
+        showLoading()
+        val listOfFilteredContacts = ArrayList<ContactsInfo>()
+        listOfAllContacts.forEach { contactsInfo ->
+            if (contactsInfo.name.toLowerCase(Locale.ROOT).contains(
+                    newText.toLowerCase(Locale.ROOT)
+                        .toString()
+                )
+            ) {
+                listOfFilteredContacts.add(contactsInfo)
+
+            }
+        }
+
+        hideLoading()
+        if (listOfFilteredContacts.isNotEmpty()) {
+            listOfContacts.clear()
+            listOfContacts.addAll(listOfFilteredContacts)
+            adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+        } else {
+            //no item found
+            Toast.makeText(requireContext(), "No matching contact found", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun shareSelectedContacts(contactsToShare: java.util.ArrayList<ContactsInfo>) {
@@ -170,6 +229,7 @@ class ContactsFragment : BaseFragment() {
             val list = listOfContacts.sortedWith(compareBy { it.name })
             listOfContacts.clear()
             listOfContacts.addAll(list)
+            listOfAllContacts.addAll(listOfContacts)
 
             contacts.close()
 

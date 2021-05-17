@@ -16,6 +16,7 @@ import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.UserContactSharing
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 import lads.contancsharing.www.R
@@ -30,13 +31,13 @@ class ProfileFragment : BaseFragment() {
 
     lateinit var mBinding: FragmentProfileBinding
     var currentUser: UserContactSharing? = null
-    var imageKey:String?=null
+    var imageKey: String? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
     }
 
-    var filePath: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,10 +59,13 @@ class ProfileFragment : BaseFragment() {
                     Helper.getImageUrl(it.image)
                 )
                 Glide.with(requireContext()).load(Helper.getImageUrl(it.image))
+                    .placeholder(R.drawable.eclipse)
+//                    .skipMemoryCache(true)
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(mBinding.circleImageView)
             }
             mBinding.textView4.setText(it.name.toString())
-            imageKey=it.image
+            imageKey = it.image
 
         }
 
@@ -80,8 +84,10 @@ class ProfileFragment : BaseFragment() {
                             mBinding.circleImageView.setImageURI(fileUri)
                             //You can get File object from intent
                             val file: File? = ImagePicker.getFile(data)
+                            printLog(file?.path.toString())
                             //You can also get File Path from intent
                             file?.let {
+                                printLog("file not null")
                                 uploadImage(it)
                             }
 
@@ -110,6 +116,7 @@ class ProfileFragment : BaseFragment() {
             if (mBinding.button2.text == "save") {
                 mBinding.button2.text = "update"
 
+                updateProfile()
 
             } else {
                 hideLoading()
@@ -135,13 +142,13 @@ class ProfileFragment : BaseFragment() {
 
 
 
-        currentUser?.let {
-            var userContactSharing = UserContactSharing.builder()
+        currentUser?.let { useR ->
+            val userContactSharing = UserContactSharing.builder()
                 .name(mBinding.textView4.text.toString().trim())
-                .phone(it.phone)
-                .deviceToken(it.deviceToken)
-                .countryCode(it.countryCode)
-                .id(it.id)
+                .phone(useR.phone)
+                .deviceToken(useR.deviceToken)
+                .countryCode(useR.countryCode)
+                .id(useR.id)
                 .image(imageKey)
                 .build()
 
@@ -152,33 +159,29 @@ class ProfileFragment : BaseFragment() {
                     printLog("Added  user : ${it}")
                     if (it.hasErrors()) {
                         ThreadUtils.runOnUiThread() {
+                            hideLoading()
                             Toast.makeText(
                                 requireContext(), "User updation Failed ", Toast
                                     .LENGTH_LONG
                             ).show()
                         }
-                        return@mutate
                     } else {
-
+                        sessionManager.updateUserSession(userContactSharing)
                         ThreadUtils.runOnUiThread() {
+                            hideLoading()
                             Toast.makeText(
                                 requireContext(), "User updated", Toast
                                     .LENGTH_LONG
                             ).show()
                         }
-                        lads.contancsharing.www.utils.Helper.startActivity(
-                            requireActivity(),
-                            Intent(requireContext(), MainActivity::class.java),
-                            true
-                        )
-                        requireActivity().finishAffinity()
                     }
                 },
                 {
                     printLog("User update Failed DataStore: ${it.cause}")
                     ThreadUtils.runOnUiThread() {
+                        hideLoading()
                         Toast.makeText(
-                            requireContext(), "User updation Failed ${it.cause}", Toast
+                            requireContext(), "User Updation Failed ${it.cause}", Toast
                                 .LENGTH_LONG
                         ).show()
                     }
@@ -195,14 +198,17 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun uploadImage(file: File) {
-showLoading()
+        showLoading()
         //delete previous
-        currentUser?.let {
-            Amplify.Storage.remove(it.image,
-                { Log.i("MyAmplifyApp", "Successfully removed: ${it.key}") },
-                { Log.e("MyAmplifyApp", "Remove failure", it) }
+        currentUser?.let { user ->
+            Amplify.Storage.remove(user.image,
+                {
+                    printLog(user.image.toString() +" old picture removed")
+                },
+                { printLog("remove failuer ${it.cause}") }
             )
         }
+
         //upload new
         val profileImagePath =
             FirebaseAuth.getInstance().currentUser.phoneNumber + "/profileImage" + "/" + file.name
@@ -210,17 +216,17 @@ showLoading()
 //        imageS3Url = "https://"+bucketName+"s3.amazonaws.com/"+"public/"+profileImagePath
 //        imageS3Url= imageS3Url.replace("+","%2B")
         // Toast.makeText(requireContext(),imageS3Url,Toast.LENGTH_LONG).show()
+        printLog(profileImagePath)
         Amplify.Storage.uploadFile(profileImagePath, file,
             {
                 printLog("image uploaded key= ${it.key}")
-                filePath = null
-                imageKey= it.key
+
+                imageKey = it.key
                 hideLoading()
                 updateProfile()
             },
             {
                 hideLoading()
-
                 printLog("Upload failed=  ${it.cause}")
             }
         )
