@@ -17,7 +17,7 @@
         android:src="@drawable/eclipse" />
 
     <LinearLayout
-        android:id="@+id/displayName"
+
         style="@style/AppTextViewBold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
         android:id="@+id/btnViewDownload"
         android:layout_width="@dimen/_14sdp"
         android:layout_height="@dimen/_14sdp"
-        android:src="@drawable/ic_check_icon" />
+        android:src="@drawable/ic_baseline_remove_red_eye_24" />
 
 
 </LinearLayout>

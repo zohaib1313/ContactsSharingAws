@@ -29,7 +29,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivContact"
             android:layout_width="@dimen/_50sdp"
-            android:visibility="gone"
+
             android:layout_height="@dimen/_50sdp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -37,7 +37,7 @@
           />
 
         <TextView
-
+            android:visibility="gone"
             android:id="@+id/tvContact"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"

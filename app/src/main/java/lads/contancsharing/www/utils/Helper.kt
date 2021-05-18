@@ -6,34 +6,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
-import android.location.Location
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.TypefaceSpan
+import android.os.Environment
+import android.text.format.DateFormat
 import android.util.Base64
 import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.NonNull
-import androidx.annotation.RequiresPermission
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.amplifyframework.core.Amplify
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -41,7 +27,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import lads.contancsharing.www.R
 import lads.contancsharing.www.models.ContactsInfo
 
-import java.io.File
 import java.io.IOException
 import java.math.RoundingMode
 import java.security.MessageDigest
@@ -266,10 +251,11 @@ object Helper {
 
     fun toCSV(array: Array<String>): String? {
         var result = ""
+        val sb = StringBuilder()
         if (array.size > 0) {
-            val sb = StringBuilder()
+
             for (s in array) {
-                sb.append(s.trim { it <= ' ' }).append("\n")
+                sb.append(s.trim { it <= ' ' })
             }
             result = sb.deleteCharAt(sb.length - 1).toString()
 
@@ -298,5 +284,16 @@ object Helper {
 
         }
         return csvData
+    }
+
+    fun getAwsDate(fileTime: Long): String? {
+        val calendar = Calendar.getInstance(Locale.ENGLISH)
+        calendar.timeInMillis = fileTime
+        return DateFormat.format("MMMM dd ,yyyy", calendar).toString()
+    }
+
+    fun getFileDirectory(filePath: String): String {
+         val fileName: String? = filePath.substringAfterLast("/")
+       return "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/${fileName}"
     }
 }

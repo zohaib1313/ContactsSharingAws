@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 import com.amplifyframework.core.Amplify
@@ -19,7 +20,7 @@ open class BaseActivity : AppCompatActivity() {
     var isLoggedIn = false
     lateinit var sessionManager: SessionManager
     lateinit var mContext: Context
-
+    open val TAG: String = "com.lads.contactsharing"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,9 @@ open class BaseActivity : AppCompatActivity() {
         } else {
             fragmentManager.popBackStack()
         }
+    }
+    fun printLog(string: String) {
+        Log.d(TAG, string+"\n")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -21,6 +21,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvReceivedContacts"
             android:layout_width="0dp"
+            tools:listitem="@layout/row_receive_contacts_save"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scrollbars="none">
@@ -38,4 +39,7 @@
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/loadingLayout"
+        layout="@layout/loadin_layout" />
 </RelativeLayout>

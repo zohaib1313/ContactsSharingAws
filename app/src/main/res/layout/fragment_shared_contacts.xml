@@ -10,47 +10,14 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <!-- You can use a RecyclerView or another "List" instead -->
-        <!--        <androidx.recyclerview.widget.RecyclerView-->
-        <!--            android:id="@+id/rvContacts"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_weight="1"-->
-        <!--            android:scrollbarStyle="outsideOverlay"-->
-        <!--            tools:listitem="@layout/row_receive_contacts_save" />-->
-        <ScrollView
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvContacts"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <include layout="@layout/row_shared_contacts" />
-
-                <include layout="@layout/row_shared_contacts" />
-
-                <include layout="@layout/row_shared_contacts" />
-
-                <include layout="@layout/row_shared_contacts" />
-
-                <include layout="@layout/row_shared_contacts" />
-
-                <include layout="@layout/row_shared_contacts" />
-
-                <include layout="@layout/row_shared_contacts" />
-
-                <include layout="@layout/row_shared_contacts" />
-
-                <include layout="@layout/row_shared_contacts" />
-
-
-            </LinearLayout>
-
-        </ScrollView>
+            android:scrollbarStyle="outsideOverlay"
+            tools:listitem="@layout/row_receive_contacts_save" />
 
 
         <com.alphabetik.Alphabetik
@@ -61,5 +28,7 @@
             android:padding="@dimen/_14sdp" />
 
     </LinearLayout>
-
+    <include
+        android:id="@+id/loadingLayout"
+        layout="@layout/loadin_layout" />
 </RelativeLayout>

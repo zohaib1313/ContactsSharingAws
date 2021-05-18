@@ -21,6 +21,7 @@ import lads.contancsharing.www.databinding.FragmentHistoryBinding
 
 
 import lads.contancsharing.www.models.FragmentsTitleFrag
+import lads.contancsharing.www.models.MessageEvent
 import org.greenrobot.eventbus.EventBus
 
 
@@ -51,9 +52,8 @@ class HistoryFragment : BaseFragment() {
         }
         mBinding.searchView.setOnQueryTextListener(object : SimpleSearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-
-// TODO: 5/17/2021 a
-//EventBus.getDefault().post()
+//posting search string event
+                EventBus.getDefault().post(MessageEvent(newText))
 
                 return true
             }

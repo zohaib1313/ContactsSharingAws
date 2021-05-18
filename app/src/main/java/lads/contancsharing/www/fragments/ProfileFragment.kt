@@ -212,21 +212,23 @@ class ProfileFragment : BaseFragment() {
         //upload new
         val profileImagePath =
             FirebaseAuth.getInstance().currentUser.phoneNumber + "/profileImage" + "/" + file.name
-//        val bucketName = "contactsharing113011-dev."
-//        imageS3Url = "https://"+bucketName+"s3.amazonaws.com/"+"public/"+profileImagePath
-//        imageS3Url= imageS3Url.replace("+","%2B")
-        // Toast.makeText(requireContext(),imageS3Url,Toast.LENGTH_LONG).show()
+
         printLog(profileImagePath)
         Amplify.Storage.uploadFile(profileImagePath, file,
             {
                 printLog("image uploaded key= ${it.key}")
 
                 imageKey = it.key
-                hideLoading()
+               ThreadUtils.runOnUiThread{
+                   hideLoading()
+               }
+
                 updateProfile()
             },
             {
-                hideLoading()
+                ThreadUtils.runOnUiThread{
+                    hideLoading()
+                }
                 printLog("Upload failed=  ${it.cause}")
             }
         )

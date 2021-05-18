@@ -1,6 +1,6 @@
 {
     "identityPoolName": "contactsharingfinalb46789a2_identitypool_b46789a2",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "contacb46789a2",
     "userPoolName": "contactsharingfinalb46789a2_userpool_b46789a2",
     "autoVerifiedAttributes": [
