@@ -8,10 +8,13 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
+import android.widget.RelativeLayout
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 import com.amplifyframework.core.Amplify
 import com.jaeger.library.StatusBarUtil
+import lads.contancsharing.www.utils.Helper
 import lads.contancsharing.www.utils.SPManager.getInstance
 
 import lads.contancsharing.www.utils.SessionManager
@@ -31,6 +34,14 @@ open class BaseActivity : AppCompatActivity() {
         setStatusBarTransparent(this)
     }
 
+    var loadingLayout: RelativeLayout? = null
+    fun showLoading() {
+        loadingLayout?.visibility = View.VISIBLE
+    }
+
+    fun hideLoading() {
+        loadingLayout?.visibility = View.GONE
+    }
     open fun setStatusBarMode(enableDarkMode: Boolean) {
         if (enableDarkMode) {
             StatusBarUtil.setDarkMode(this)

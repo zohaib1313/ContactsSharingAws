@@ -25,5 +25,6 @@
     <string name="erro_contain_country_code">write number without country code</string>
     <string name="prompt_search">hint</string>
     <string name="denny">Denny</string>
+    <string name="default_notification_channel_id">def</string>
 
 </resources>

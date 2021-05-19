@@ -24,6 +24,7 @@ import lads.contancsharing.www.activities.MainActivity
 import lads.contancsharing.www.activities.SignUpActivity
 import lads.contancsharing.www.databinding.FragmentProfileBinding
 import lads.contancsharing.www.utils.Helper
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
@@ -51,7 +52,11 @@ class ProfileFragment : BaseFragment() {
 
 
         printLog("user " + currentUser.toString())
-
+        mBinding.imageView2.setOnClickListener {
+//            EventBus.getDefault().post("selectContacts")
+//            printLog("sending event")
+            MainActivity.bottomNavView.selectedItemId=R.id.actionContacts
+        }
 
         currentUser?.let {
             if (!it.image.isNullOrEmpty()) {
@@ -203,7 +208,7 @@ class ProfileFragment : BaseFragment() {
         currentUser?.let { user ->
             Amplify.Storage.remove(user.image,
                 {
-                    printLog(user.image.toString() +" old picture removed")
+                    printLog(user.image.toString() + " old picture removed")
                 },
                 { printLog("remove failuer ${it.cause}") }
             )
@@ -219,14 +224,14 @@ class ProfileFragment : BaseFragment() {
                 printLog("image uploaded key= ${it.key}")
 
                 imageKey = it.key
-               ThreadUtils.runOnUiThread{
-                   hideLoading()
-               }
+                ThreadUtils.runOnUiThread {
+                    hideLoading()
+                }
 
                 updateProfile()
             },
             {
-                ThreadUtils.runOnUiThread{
+                ThreadUtils.runOnUiThread {
                     hideLoading()
                 }
                 printLog("Upload failed=  ${it.cause}")
@@ -262,7 +267,7 @@ class ProfileFragment : BaseFragment() {
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {
         val mFragmentTransaction: FragmentTransaction =
             activity?.supportFragmentManager!!.beginTransaction()
-        mFragmentTransaction.replace(R.id.fragmentContainerLogin, fragment)
+        mFragmentTransaction.replace(R.id.mainActivityFragmentContainer, fragment)
         mFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         if (needToAddBackstack) mFragmentTransaction.addToBackStack(null)
         mFragmentTransaction.commit()

@@ -20,9 +20,15 @@ import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amazonaws.mobile.client.Callback
+import com.amazonaws.mobile.client.UserStateDetails
+import com.amplifyframework.core.Amplify.Auth
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.firebase.auth.FirebaseAuth
+import lads.contancsharing.www.BuildConfig
 
 import lads.contancsharing.www.R
 import lads.contancsharing.www.models.ContactsInfo
@@ -257,7 +263,7 @@ object Helper {
             for (s in array) {
                 sb.append(s.trim { it <= ' ' })
             }
-            result = sb.deleteCharAt(sb.length - 1).toString()
+            result = sb.toString()
 
             // Toast.makeText(requireContext(),result,Toast.LENGTH_LONG).show()
         }
@@ -265,13 +271,13 @@ object Helper {
     }
 
     @Throws(IOException::class)
-     fun exportDataToCSV(data: ArrayList<ContactsInfo>): String {
+    fun exportDataToCSV(data: ArrayList<ContactsInfo>): String {
         var csvData = ""
         for (i in 0 until data.size) {
-
+            Log.d("taag", data[i].name)
             val currentLIne: String = data[i].name
             val number: String = data[i].number
-            val cells = currentLIne.split(";".toRegex()).toTypedArray()
+            val cells = listOf<String>(currentLIne).toTypedArray()
             csvData += """
                 ${toCSV(cells).toString()}
 
@@ -283,6 +289,8 @@ object Helper {
                 """.trimIndent()
 
         }
+
+        Log.d("taag", csvData.toString())
         return csvData
     }
 
@@ -293,7 +301,39 @@ object Helper {
     }
 
     fun getFileDirectory(filePath: String): String {
-         val fileName: String? = filePath.substringAfterLast("/")
-       return "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/${fileName}"
+        val fileName: String? = filePath.substringAfterLast("/")
+        return "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/${fileName}"
     }
+
+    fun sessionRefresh() {
+        val mUser = FirebaseAuth.getInstance().currentUser
+        mUser!!.getIdToken(true)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                    val idToken = task.result?.token
+                    Log.i("result is ", idToken.toString())
+
+                    // Send token to your backend via HTTPS
+                    var mobileClient =
+                        Auth.getPlugin("awsCognitoAuthPlugin").escapeHatch as AWSMobileClient?
+                    mobileClient?.federatedSignIn(
+                        "securetoken.google.com/contactssharing-d144b",
+                        idToken, object : Callback<UserStateDetails?> {
+                            override fun onResult(userStateDetails: UserStateDetails?) {
+                                Log.d("com.lads.contactsharing", "Token refreshed...")
+
+                            }
+
+                            override fun onError(e: Exception?) {
+                                Log.d("com.lads.contactsharing", "Token refreshed failed...")
+                            }
+                        })
+                    // ...
+                } else {
+                    // Handle error -> task.getException();
+                }
+            }
+    }
+
 }

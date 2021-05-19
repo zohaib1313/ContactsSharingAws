@@ -63,6 +63,7 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         mBinding = FragmentContactsShareToBinding.inflate(layoutInflater)
         loadingLayout = mBinding.loadingLayout.rlLoading
 
@@ -174,7 +175,7 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
         rec_name.text = contactsInfo.name
         rec_phone.text = contactsInfo.number
         headerTitle.text =
-            "Are you sure you want to sent " + listOfContactsToShare.size + " contacts to"
+            "Are you sure you want to sent " + listOfContactsToShare.size + " contacts to "
         try {
             if (contactsInfo.photo == "") {
                 ivDp.visibility = View.GONE
@@ -218,7 +219,9 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
 
 
         yesBtn.setOnClickListener {
-
+            listOfContactsToShare.forEach { contactsInfo ->
+                printLog(contactsInfo.toString())
+            }
             saveFile(
                 Helper.exportDataToCSV(listOfContactsToShare),
                 contactsInfo.number,
@@ -377,7 +380,12 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
                                         printLog("file added ")
                                         runOnUiThread() {
                                             hideLoading()
-                                            requireFragmentManager().popBackStack()
+
+
+
+                                            changeFragment(ContactsFragment(), false)
+
+
                                             Toast.makeText(
                                                 requireContext(), "Upload Successfully ", Toast
                                                     .LENGTH_LONG
@@ -389,7 +397,9 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
                                         runOnUiThread() {
                                             hideLoading()
                                             Toast.makeText(
-                                                requireContext(), "uploading failed ${it.cause} ", Toast
+                                                requireContext(),
+                                                "uploading failed ${it.cause} ",
+                                                Toast
                                                     .LENGTH_LONG
                                             ).show()
                                         }
@@ -427,6 +437,7 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
             listOfContactsToShare: ArrayList<ContactsInfo>
         ): ContactsShareToFragment {
             val fragment = ContactsShareToFragment(listOfContactsToShare)
+
             val args = Bundle()
             args.putInt(ARG_DATA, index)
             fragment.arguments = args

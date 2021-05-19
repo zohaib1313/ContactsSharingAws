@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import lads.contancsharing.www.R
 import lads.contancsharing.www.databinding.ActivityMainBinding
 
@@ -14,10 +15,19 @@ import lads.contancsharing.www.fragments.ContactsFragment
 import lads.contancsharing.www.fragments.HistoryFragment
 import lads.contancsharing.www.fragments.ProfileFragment
 import lads.contancsharing.www.fragments.ReceiveFragment
+import lads.contancsharing.www.models.MessageEvent
+import lads.contancsharing.www.utils.Helper
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class MainActivity : BaseActivity() {
     private var mFragmentManager: FragmentManager? = null
     lateinit var mBinding: ActivityMainBinding
+
+    companion object {
+        lateinit var bottomNavView: BottomNavigationView
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,9 +35,13 @@ class MainActivity : BaseActivity() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         mFragmentManager = supportFragmentManager
-        mBinding.bottomNavigationView.setOnNavigationItemSelectedListener { onBottomNavClick(it) }
+        bottomNavView = mBinding.bottomNavigationView
+        bottomNavView.setOnNavigationItemSelectedListener { onBottomNavClick(it) }
         changeFragment(ContactsFragment.newInstance(0), false)
+        if (sessionManager.user != null) {
 
+            Helper.sessionRefresh()
+        }
 
     }
 
@@ -65,6 +79,12 @@ class MainActivity : BaseActivity() {
 
         activeTabId = item.itemId
         return true
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {

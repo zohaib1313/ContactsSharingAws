@@ -6,10 +6,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.Window
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amazonaws.mobile.client.UserStateDetails
+import com.amplifyframework.core.Amplify
 import lads.contancsharing.www.databinding.ActivitySplashBinding
+import lads.contancsharing.www.fragments.ProfileInfoFragment
 
 import lads.contancsharing.www.utils.AppConstant
+import lads.contancsharing.www.utils.Helper
 
 
 class SplashActivity :BaseActivity() {
@@ -28,12 +34,14 @@ class SplashActivity :BaseActivity() {
          * and close this Splash-Screen after some seconds.*/
         /* New Handler to start the Menu-Activity
          * and close this Splash-Screen after some seconds.*/
-
-
+        if (sessionManager.user != null) {
+            Helper.sessionRefresh()
+        }
         Handler().postDelayed(Runnable {
             val mainIntent = Intent(this@SplashActivity, SignUpActivity::class.java)
             this@SplashActivity.startActivity(mainIntent)
             this@SplashActivity.finish()
+
         }, AppConstant.SPLASH_SLEEP_TIME.toLong())
     }
 

@@ -18,6 +18,7 @@ import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.UserContactSharing
+import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
 
 import com.google.firebase.auth.FirebaseAuth
@@ -36,7 +37,7 @@ class ProfileInfoFragment : BaseFragment() {
     var filePath: String? = null
     var imagekey: String? = null
     var idToken: String? = null
-
+    var userExists = false
     var name: String? = null
     var userContactSharing: UserContactSharing.Builder? = null
     override fun onAttach(context: Context) {
@@ -50,11 +51,10 @@ class ProfileInfoFragment : BaseFragment() {
     ): View {
         mBinding = FragmentProfileInfoBinding.inflate(layoutInflater)
         loadingLayout = mBinding.loadingLayout.rlLoading
-        showLoading()
         firebaseAuth = FirebaseAuth.getInstance()
         userContactSharing = UserContactSharing.Builder()
         getToken()
-        mBinding = FragmentProfileInfoBinding.inflate(layoutInflater)
+
         mBinding.btnDone.setOnClickListener {
             if (mBinding.textView3.text.isNullOrEmpty()) {
                 mBinding.textView3.error = getString(
@@ -67,6 +67,8 @@ class ProfileInfoFragment : BaseFragment() {
             lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
             showLoading()
             uploadImage()
+
+            printLog("show loading")
         }
 
 
@@ -107,8 +109,50 @@ class ProfileInfoFragment : BaseFragment() {
                 }
         }
 
-
+        checkIfUserExists()
         return mBinding.root
+    }
+
+    private fun checkIfUserExists() {
+        showLoading()
+        val request =
+            ModelQuery.list(UserContactSharing::class.java)
+        Amplify.API.query(request, { response ->
+            if (response.hasData() && !response.hasErrors()) {
+
+                response.data.items.forEach { userO ->
+                    if (userO.phone.equals(firebaseAuth.currentUser.phoneNumber.toString())) {
+                        runOnUiThread {
+                            printLog("user already exists")
+                            hideLoading()
+                            userExists = true
+                            userContactSharing!!.id(userO.id)
+                            userO.name?.let {
+                                mBinding.textView3.setText(it.toString())
+                            }
+
+                            userO.image?.let {
+                                Glide.with(requireContext())
+                                    .load(lads.contancsharing.www.utils.Helper.getImageUrl(it.toString()))
+                                    .placeholder(R.drawable.eclipse)
+//                    .skipMemoryCache(true)
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .into(mBinding.circleImageView)
+                            }
+                        }
+                        return@forEach
+                    }
+                }
+
+            } else {
+///error
+                runOnUiThread{
+                    hideLoading()
+                }
+            }
+        }, {runOnUiThread{
+            hideLoading()
+        }})
     }
 
     private fun getToken() {
@@ -198,7 +242,8 @@ class ProfileInfoFragment : BaseFragment() {
                 }
 
 
-                var user = userContactSharing!!.build()
+                val user = userContactSharing!!.build()
+
                 if (userExists) {
                     printLog("user exists")
                     Amplify.API.mutate(
@@ -207,6 +252,7 @@ class ProfileInfoFragment : BaseFragment() {
                             printLog("Added  user : ${it}")
                             if (it.hasErrors()) {
                                 runOnUiThread() {
+                                    hideLoading()
                                     Toast.makeText(
                                         requireContext(), "User Creation Failed ", Toast
                                             .LENGTH_LONG
@@ -217,9 +263,10 @@ class ProfileInfoFragment : BaseFragment() {
 
                                 sessionManager.createUserLoginSession(user)
                                 runOnUiThread() {
+                                    hideLoading()
                                     Toast.makeText(
                                         requireContext(), "User Created", Toast
-                                            .LENGTH_LONG
+                                            .LENGTH_SHORT
                                     ).show()
                                 }
                                 lads.contancsharing.www.utils.Helper.startActivity(
@@ -233,6 +280,7 @@ class ProfileInfoFragment : BaseFragment() {
                         {
                             printLog("User Add Failed DataStore: ${it.cause}")
                             runOnUiThread() {
+                                hideLoading()
                                 Toast.makeText(
                                     requireContext(), "User Creation Failed ${it.cause}", Toast
                                         .LENGTH_LONG
@@ -296,7 +344,7 @@ class ProfileInfoFragment : BaseFragment() {
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {
         val mFragmentTransaction: FragmentTransaction =
             activity?.supportFragmentManager!!.beginTransaction()
-        mFragmentTransaction.replace(R.id.fragmentContainerLogin, fragment)
+        mFragmentTransaction.replace(R.id.mainActivityFragmentContainer, fragment)
         mFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         if (needToAddBackstack) mFragmentTransaction.addToBackStack(null)
         mFragmentTransaction.commit()

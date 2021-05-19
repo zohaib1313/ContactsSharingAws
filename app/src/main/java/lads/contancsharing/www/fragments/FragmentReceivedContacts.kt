@@ -78,7 +78,7 @@ class FragmentReceivedContacts : BaseFragment() {
 
                     val intent = Intent(requireContext(), ContactsDownloadViewActivity::class.java)
                     val item = dataListAdapterItem[position]
-                    item.sharingWithCloudModel.filePath
+
                     printLog(item.sharingWithCloudModel.filePath)
                     intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.sharingWithCloudModel))
                     Helper.startActivity(requireActivity(), intent, false)

@@ -7,6 +7,8 @@ import android.util.Log;
 import com.amplifyframework.datastore.generated.model.UserContactSharing;
 import com.google.gson.Gson;
 
+import org.jetbrains.annotations.NotNull;
+
 
 public class SessionManager {
     // Shared Preferences
@@ -22,7 +24,7 @@ public class SessionManager {
     int PRIVATE_MODE = 0;
 
     private static SessionManager instance;
-   // User user = null;
+    // User user = null;
 
 
     public static SessionManager getInstance(Context context) {
@@ -38,7 +40,7 @@ public class SessionManager {
         pref = mContext.getSharedPreferences(AppConstant.PREF_NAME, PRIVATE_MODE);
         mSPManager = SPManager.getInstance(context);
         editor = pref.edit();
-       // getUser();
+        // getUser();
     }
 
     public SPManager getSPManager() {
@@ -55,7 +57,8 @@ public class SessionManager {
         editor.commit();
 
     }
-//
+
+    //
     public void clearSession() {
         editor.clear();
         getSPManager().put(AppConstant.IS_VISITED_INTRO, true);
@@ -67,14 +70,15 @@ public class SessionManager {
     public void createUserLoginSession(UserContactSharing user) {
         clearSession();
         // Storing login value as TRUE
-         editor.putBoolean(AppConstant.KEY_IS_LOGGED_IN, true);
+        editor.putBoolean(AppConstant.KEY_IS_LOGGED_IN, true);
         editor.putBoolean(AppConstant.IS_VISITED_INTRO, true);
         // commit changes
         editor.commit();
 
         updateUserSession(user);
     }
-//
+
+    //
 //
 //
 //
@@ -91,7 +95,8 @@ public class SessionManager {
         editor.commit();
 
     }
-//
+
+    //
 //
     public UserContactSharing getUser() {
         if (user == null) {
@@ -104,6 +109,13 @@ public class SessionManager {
     }
 
 
+    public void updateToken(@NotNull String token) {
+        editor.putString(AppConstant.PUSH_TOKEN, token);
+        editor.commit();
+    }
 
+    public String getToken() {
+        return pref.getString(AppConstant.PUSH_TOKEN, null);
+    }
 
 }

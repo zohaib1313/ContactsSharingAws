@@ -1,6 +1,7 @@
 package lads.contancsharing.www.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -17,16 +18,21 @@ import com.amplifyframework.api.ApiException
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.ContactSharingWith
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import lads.contancsharing.www.R
+import lads.contancsharing.www.activities.ContactsDownloadViewActivity
 import lads.contancsharing.www.adapters.AdapterContactsReceivedShared
+import lads.contancsharing.www.callBacks.OnItemClickListener
 
 import lads.contancsharing.www.databinding.FragmentSharedContactsBinding
 import lads.contancsharing.www.models.MessageEvent
 import lads.contancsharing.www.models.ModelSharingContactWith
+import lads.contancsharing.www.utils.AppConstant
+import lads.contancsharing.www.utils.Helper
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -64,6 +70,22 @@ class FragmentSharedContacts : BaseFragment() {
             AdapterContactsReceivedShared(requireContext(), dataListAdapterItem)
         rvReceivedContacts.adapter = adapterContactsReceivedShared
         adapterContactsReceivedShared.notifyDataSetChanged()
+        adapterContactsReceivedShared.setOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClick(view: View, position: Int, character: String) {
+                if (view.id == R.id.btnViewDownload) {
+                    printLog("radio selected")
+
+
+                    val intent = Intent(requireContext(), ContactsDownloadViewActivity::class.java)
+                    val item = dataListAdapterItem[position]
+
+                    printLog(item.sharingWithCloudModel.filePath)
+                    intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.sharingWithCloudModel))
+                    Helper.startActivity(requireActivity(), intent, false)
+                }
+
+            }
+        })
 
 
         getListOfShredContacts()

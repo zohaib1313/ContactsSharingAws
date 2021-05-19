@@ -48,14 +48,12 @@ class ContactsFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        printLog("on resume")
-        listOfContacts.clear()
 
-        listOfContacts.addAll(listOfAllContacts)
-        adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
-    checkSelectedContacts()
+        initRv()
+        checkSelectedContacts()
 
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -112,6 +110,33 @@ class ContactsFragment : BaseFragment() {
         })
 
 
+//
+//        initRv()
+
+        mBinding.fab.setOnClickListener {
+            if (selectedItemsCount > 0) {
+                val list = ArrayList<ContactsInfo>()
+                list.clear()
+                listOfContacts.forEach {
+                    if (it.selected) {
+                        list.add(it)
+                        printLog(it.toString())
+                    }
+                }
+
+                shareSelectedContacts(list)
+            }
+
+        }
+
+        return mBinding.root
+    }
+
+    private fun initRv() {
+
+        listOfContacts.clear()
+        listOfAllContacts.clear()
+        listOfFilteredContacts.clear()
 
         printLog(sessionManager.isLoggedIn.toString())
         adapterContactListRecyclerViewAdapter =
@@ -136,23 +161,6 @@ class ContactsFragment : BaseFragment() {
         requestContactPermission()
         listOfContacts.sortedWith(compareBy { it.name })
         adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
-
-        mBinding.fab.setOnClickListener {
-            if (selectedItemsCount > 0) {
-                val list = ArrayList<ContactsInfo>()
-                list.clear()
-                listOfContacts.forEach {
-                    if (it.selected) {
-                        list.add(it)
-                    }
-                }
-
-                shareSelectedContacts(list)
-            }
-
-        }
-
-        return mBinding.root
     }
 
     private fun searchFromList(newText: String) {
@@ -180,11 +188,14 @@ class ContactsFragment : BaseFragment() {
     private fun shareSelectedContacts(contactsToShare: java.util.ArrayList<ContactsInfo>) {
 
 
-        listOfContacts.forEach{
-            it.selected=false
+        listOfContacts.forEach {
+            it.selected = false
         }
+        checkSelectedContacts()
         adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
-        selectedItemsCount=0;
+
+        selectedItemsCount = 0;
+        printLog(contactsToShare.toString())
         changeFragment(ContactsShareToFragment(contactsToShare), true)
 
 
@@ -263,6 +274,7 @@ class ContactsFragment : BaseFragment() {
             listOfContacts.clear()
             listOfContacts.addAll(list)
             listOfAllContacts.addAll(listOfContacts)
+            adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
 
             contacts.close()
 
@@ -288,6 +300,9 @@ class ContactsFragment : BaseFragment() {
                 ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
@@ -303,7 +318,8 @@ class ContactsFragment : BaseFragment() {
                         requestPermissions(
                             arrayOf(
                                 Manifest.permission.WRITE_CONTACTS,
-                                Manifest.permission.READ_CONTACTS
+                                Manifest.permission.READ_CONTACTS,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
                             ),
                             PERMISSIONS_REQUEST_WRITE_CONTACTS
                         )
@@ -313,7 +329,8 @@ class ContactsFragment : BaseFragment() {
                     ActivityCompat.requestPermissions(
                         requireActivity(), arrayOf(
                             Manifest.permission.WRITE_CONTACTS,
-                            Manifest.permission.READ_CONTACTS
+                            Manifest.permission.READ_CONTACTS,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
                         ),
                         PERMISSIONS_REQUEST_WRITE_CONTACTS
                     )

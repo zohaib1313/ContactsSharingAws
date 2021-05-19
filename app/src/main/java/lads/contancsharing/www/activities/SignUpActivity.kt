@@ -22,6 +22,11 @@ class SignUpActivity : BaseActivity() {
         Log.d("abccc", sessionManager.isLoggedIn.toString())
 
         if (sessionManager.isLoggedIn) {
+
+
+            generateNewToken()
+
+
             lads.contancsharing.www.utils.Helper.startActivity(
                 this@SignUpActivity,
                 Intent(this@SignUpActivity, MainActivity::class.java),
@@ -32,6 +37,10 @@ class SignUpActivity : BaseActivity() {
 
         changeFragment(LoginFragment.newInstance(0), false)
 
+    }
+
+    private fun generateNewToken() {
+        
     }
 
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {

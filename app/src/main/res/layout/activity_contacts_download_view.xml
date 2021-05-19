@@ -5,18 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/_8sdp"
-
-    >
+    android:fitsSystemWindows="true"
+    android:paddingTop="@dimen/_8sdp">
 
 
     <RelativeLayout
-        android:paddingStart="@dimen/_8sdp"
-        android:paddingEnd="@dimen/_8sdp"
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+
+        android:background="@color/white"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp">
 
         <RelativeLayout
             android:id="@+id/rlHeader"
@@ -93,8 +92,51 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <include
-        android:id="@+id/bottomSheet"
-        layout="@layout/bottom_sheet" />
+    <RelativeLayout
+        android:id="@+id/bottom_sheett"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/_4sdp"
+        android:background="@color/white"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/AppTextViewBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="7 Contacts Selected"
+            android:textColor="@color/app_color_blue"
+            android:textSize="@dimen/_10sdp" />
+
+        <ImageView
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_baseline_save_alt_24" />
+
+        <TextView
+            android:id="@+id/tvCancel"
+            style="@style/AppTextViewNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:padding="@dimen/_8sdp"
+            android:text="Cancel"
+            android:textSize="@dimen/_10sdp" />
+
+    </RelativeLayout>
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
