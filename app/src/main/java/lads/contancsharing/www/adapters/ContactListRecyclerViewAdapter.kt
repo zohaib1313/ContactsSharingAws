@@ -18,7 +18,11 @@ import lads.contancsharing.www.models.ContactsInfo
 import java.util.*
 
 
-class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<ContactsInfo>,var isHideRadioSelection:Boolean) :
+class ContactListRecyclerViewAdapter(
+    var mContext: Context,
+    var dataList: List<ContactsInfo>,
+    var isHideRadioSelection: Boolean
+) :
     RecyclerView.Adapter<ContactListRecyclerViewAdapter.MyViewHolder>() {
 
     internal var mOnItemClickListener: OnItemClickListener? = null
@@ -29,9 +33,9 @@ class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<C
 
 
         init {
-        if(isHideRadioSelection){
-            binding.radioBtnSelect.visibility=View.INVISIBLE
-        }
+            if (isHideRadioSelection) {
+                binding.radioBtnSelect.visibility = View.INVISIBLE
+            }
             binding.root.setOnClickListener(this)
         }
 
@@ -59,7 +63,7 @@ class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<C
         with(holder) {
             with(dataList[position]) {
                 binding.displayName.text = name
-
+                binding.phoneNumber.text = number.toString()
                 if (selected) {
                     binding.radioBtnSelect.background =
                         getDrawable(mContext, R.drawable.ic_check_icon)
@@ -92,8 +96,8 @@ class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<C
                             builder.append(strArray[2], 0, 1)
                         }
 
-                        binding.tvContact.background=drawable
-                        binding.tvContact.text=builder.toString()
+                        binding.tvContact.background = drawable
+                        binding.tvContact.text = builder.toString()
 
                     } else {
                         val bitmap =
@@ -115,7 +119,6 @@ class ContactListRecyclerViewAdapter(var mContext: Context, var dataList: List<C
     fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
         this.mOnItemClickListener = onItemClickListener
     }
-
 
 
 }

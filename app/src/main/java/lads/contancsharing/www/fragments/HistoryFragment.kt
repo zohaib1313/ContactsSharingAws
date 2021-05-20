@@ -103,9 +103,9 @@ class HistoryFragment : BaseFragment() {
 
         val listOfFragments = ArrayList<FragmentsTitleFrag>()
 
-        listOfFragments.add(FragmentsTitleFrag("Received Contacts", FragmentReceivedContacts()))
+        listOfFragments.add(FragmentsTitleFrag("Received", FragmentReceivedContacts()))
 
-        listOfFragments.add(FragmentsTitleFrag("Shared Contacts", FragmentSharedContacts()))
+        listOfFragments.add(FragmentsTitleFrag("Shared", FragmentSharedContacts()))
 
 
 

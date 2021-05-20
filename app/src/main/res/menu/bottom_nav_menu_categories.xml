@@ -9,7 +9,7 @@
     <item
         android:id="@+id/actionReceive"
         android:icon="@drawable/recieve"
-        android:title="Receive"
+        android:title="Notifications"
         app:showAsAction="always" />
     <item
         android:id="@+id/actionHistory"

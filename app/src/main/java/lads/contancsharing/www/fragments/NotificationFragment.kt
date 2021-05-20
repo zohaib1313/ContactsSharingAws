@@ -1,7 +1,6 @@
 package lads.contancsharing.www.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import lads.contancsharing.www.R
-import lads.contancsharing.www.databinding.FragmentReceiveBinding
+import lads.contancsharing.www.databinding.FragmentNotificationsBinding
 
-class ReceiveFragment : BaseFragment() {
 
-    lateinit var mBinding: FragmentReceiveBinding
+class NotificationFragment : BaseFragment() {
+
+    lateinit var mBinding: FragmentNotificationsBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -24,7 +24,7 @@ class ReceiveFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = FragmentReceiveBinding.inflate(layoutInflater)
+        mBinding = FragmentNotificationsBinding.inflate(layoutInflater)
 //        mBinding.btnNext.setOnClickListener {
 //            changeFragment()
 //        }
@@ -34,8 +34,8 @@ class ReceiveFragment : BaseFragment() {
 
     companion object {
         private val ARG_DATA = "position"
-        fun newInstance(index: Int): ReceiveFragment {
-            val fragment = ReceiveFragment()
+        fun newInstance(index: Int): NotificationFragment {
+            val fragment = NotificationFragment()
             val args = Bundle()
             args.putInt(ARG_DATA, index)
             fragment.arguments = args

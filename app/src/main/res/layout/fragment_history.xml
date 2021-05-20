@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/_8sdp"
+    android:paddingStart="@dimen/_16sdp"
     android:paddingTop="@dimen/_8sdp"
-    android:paddingEnd="@dimen/_8sdp"
+    android:paddingEnd="@dimen/_16sdp"
     tools:context=".fragments.HistoryFragment"
     tools:ignore="RtlSymmetry">
 
@@ -15,8 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:paddingStart="@dimen/_16sdp"
-        android:paddingEnd="@dimen/_16sdp">
+
+        >
 
         <TextView
 
@@ -45,16 +45,17 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_4sdp" />
+
+        />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_below="@id/rlHeader"
-        android:layout_marginStart="@dimen/_14sdp"
+
         android:layout_marginTop="@dimen/_8sdp"
-        android:layout_marginEnd="@dimen/_14sdp"
+
         android:layout_marginBottom="@dimen/_8sdp"
         android:background="@drawable/not_selected"
         android:fillViewport="true"

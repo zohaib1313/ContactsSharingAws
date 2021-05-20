@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rlLoading"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:layout_gravity="center"
+   android:background="@color/white"
     android:visibility="gone"
-    >
+    android:gravity="center">
 
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminate="true" />
+    <com.airbnb.lottie.LottieAnimationView
+
+        android:id="@+id/lav_actionBar"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="loading_layout.json"
+        app:lottie_loop="true" />
 </RelativeLayout>

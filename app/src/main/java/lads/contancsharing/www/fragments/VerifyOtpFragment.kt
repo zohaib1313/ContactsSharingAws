@@ -1,34 +1,43 @@
 package lads.contancsharing.www.fragments
 
+
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.UserStateDetails
 import com.amplifyframework.core.Amplify
+import com.goodiebag.pinview.Pinview.PinViewEventListener
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-
-
 import lads.contancsharing.www.R
 import lads.contancsharing.www.databinding.FragmentVerifyOtpBinding
 import java.util.concurrent.TimeUnit
 
 
-class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
+class VerifyOtpFragment(
+    var verificationId: String,
+    var phoneNumber: String,
+    var token: PhoneAuthProvider.ForceResendingToken
+) : BaseFragment() {
 
     lateinit var mBinding: FragmentVerifyOtpBinding
+    private var vCallBacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
+    private var forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null
 
     //Progress Dialog
-    private lateinit var progressDialog: ProgressDialog
+
     private lateinit var firebaseAuth: FirebaseAuth
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,6 +49,9 @@ class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentVerifyOtpBinding.inflate(layoutInflater)
+        loadingLayout = mBinding.loadingLayout.rlLoading
+        mBinding.tvTitle.text = "Login using OTP sent to ${phoneNumber}"
+        forceResendingToken = token
         mBinding.btnDone.setOnClickListener {
 
             if (mBinding.pinview.value.isNullOrEmpty()) {
@@ -48,24 +60,99 @@ class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
             }
             lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
             verifyPhoneNumberThroughCode(verificationId, mBinding.pinview.value)
-
+            mBinding.pinview.setPinViewEventListener(PinViewEventListener { pinview, fromUser -> //Make api calls here or what not
+                printLog(fromUser.toString())
+            })
         }
 
         mBinding.ivBack.setOnClickListener {
-            requireFragmentManager().popBackStack()
+            changeFragment(LoginFragment.newInstance(0), false)
         }
         firebaseAuth = FirebaseAuth.getInstance()
-        progressDialog = ProgressDialog(requireContext())
-        progressDialog.setTitle("Please Wait")
-        progressDialog.setCanceledOnTouchOutside(false)
+
+        vCallBacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
+
+                Log.d(TAG, "onVerificationCompleted: ")
+                signInWithPhoneAuthCredential(phoneAuthCredential)
+
+            }
+
+            override fun onVerificationFailed(e: FirebaseException) {
+
+                Log.d(TAG, "onVerificationFailed: ${e.message}")
+                ThreadUtils.runOnUiThread {
+                    hideLoading()
+                }
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
+            }
+
+            override fun onCodeSent(
+                verificationId: String,
+                token: PhoneAuthProvider.ForceResendingToken
+            ) {
+                Log.d(TAG, "onCodeSent: $verificationId")
+                this@VerifyOtpFragment.verificationId = verificationId
+                forceResendingToken = token
+                ThreadUtils.runOnUiThread {
+                    hideLoading()
+                }
+
+                Toast.makeText(requireContext(), "Verification Code Sent", Toast.LENGTH_SHORT)
+                    .show()
+
+            }
+
+        }
+
+        mBinding.btnResendOtp.setOnClickListener {
+
+            forceResendingToken?.let {
+                resendVerificationCode(phoneNumber, it)
+            }
+
+
+        }
 
         return mBinding.root
     }
 
+
+    private fun resendVerificationCode(
+        phoneNumber: String,
+        token: PhoneAuthProvider.ForceResendingToken?
+    ) {
+
+        ThreadUtils.runOnUiThread {
+            showLoading()
+        }
+
+        Log.d(TAG, "resendVerificationCode: $phoneNumber")
+
+        val phoneOptions = vCallBacks?.let {
+            token?.let { it1 ->
+                PhoneAuthOptions.newBuilder(firebaseAuth)
+                    .setPhoneNumber(phoneNumber)
+                    .setTimeout(50L, TimeUnit.SECONDS)
+                    .setActivity(requireActivity())
+                    .setCallbacks(it)
+                    .setForceResendingToken(it1)
+                    .build()
+            }
+        }
+
+        PhoneAuthProvider.verifyPhoneNumber(phoneOptions!!)
+    }
+
     companion object {
         private val ARG_DATA = "position"
-        fun newInstance(index: Int, verificationId: String): VerifyOtpFragment {
-            val fragment = VerifyOtpFragment(verificationId)
+        fun newInstance(
+            index: Int,
+            verificationId: String,
+            phoneNumber: String,
+            token: PhoneAuthProvider.ForceResendingToken
+        ): VerifyOtpFragment {
+            val fragment = VerifyOtpFragment(verificationId, phoneNumber, token)
             val args = Bundle()
             args.putInt(ARG_DATA, index)
             fragment.arguments = args
@@ -76,9 +163,10 @@ class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
 
     private fun verifyPhoneNumberThroughCode(verificationId: String?, code: String) {
 
-        progressDialog.setMessage("Verifying Code...")
-        progressDialog.show()
-
+        // showLoading()
+        ThreadUtils.runOnUiThread {
+            showLoading()
+        }
         val credential = PhoneAuthProvider.getCredential(verificationId.toString(), code)
         signInWithPhoneAuthCredential(credential)
 
@@ -88,7 +176,6 @@ class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         Log.d(TAG, "signInWithPhoneAuthCredential: ")
 
-        progressDialog.setMessage("Logging In")
         firebaseAuth.signInWithCredential(credential)
             .addOnSuccessListener {
                 //login success
@@ -108,7 +195,9 @@ class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
 
             }
             .addOnFailureListener { e ->
-                progressDialog.dismiss()
+                ThreadUtils.runOnUiThread {
+                    hideLoading()
+                }
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
     }
@@ -136,7 +225,9 @@ class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
             object : com.amazonaws.mobile.client.Callback<UserStateDetails?> {
 
                 override fun onResult(userStateDetails: UserStateDetails?) {
-                    progressDialog.dismiss()
+                    ThreadUtils.runOnUiThread {
+                        hideLoading()
+                    }
 
                     printLog("id= ${mobileClient.identityId}")
                     printLog("userDetails= ${userStateDetails?.details}")
@@ -145,7 +236,9 @@ class VerifyOtpFragment(var verificationId: String) : BaseFragment() {
                 }
 
                 override fun onError(e: Exception?) {
-                    progressDialog.dismiss()
+                    ThreadUtils.runOnUiThread {
+                        hideLoading()
+                    }
                     if (e != null) {
                         printLog("Error aws:: " + e.message)
                     }

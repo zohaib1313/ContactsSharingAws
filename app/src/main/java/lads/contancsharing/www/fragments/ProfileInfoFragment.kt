@@ -40,6 +40,7 @@ class ProfileInfoFragment : BaseFragment() {
     var userExists = false
     var name: String? = null
     var userContactSharing: UserContactSharing.Builder? = null
+    lateinit var userPhoneNumber: String
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
@@ -53,6 +54,8 @@ class ProfileInfoFragment : BaseFragment() {
         loadingLayout = mBinding.loadingLayout.rlLoading
         firebaseAuth = FirebaseAuth.getInstance()
         userContactSharing = UserContactSharing.Builder()
+        userPhoneNumber =
+            firebaseAuth.currentUser.phoneNumber.toString().replace("-", "").replace(" ", "")
         getToken()
 
         mBinding.btnDone.setOnClickListener {
@@ -121,7 +124,7 @@ class ProfileInfoFragment : BaseFragment() {
             if (response.hasData() && !response.hasErrors()) {
 
                 response.data.items.forEach { userO ->
-                    if (userO.phone.equals(firebaseAuth.currentUser.phoneNumber.toString())) {
+                    if (userO.phone.equals(userPhoneNumber.toString())) {
                         runOnUiThread {
                             printLog("user already exists")
                             hideLoading()
@@ -141,18 +144,25 @@ class ProfileInfoFragment : BaseFragment() {
                             }
                         }
                         return@forEach
+                    } else {
+                        printLog("user does not  exists already")
+                        runOnUiThread {
+                            hideLoading()
+                        }
                     }
                 }
 
             } else {
 ///error
-                runOnUiThread{
+                runOnUiThread {
                     hideLoading()
                 }
             }
-        }, {runOnUiThread{
-            hideLoading()
-        }})
+        }, {
+            runOnUiThread {
+                hideLoading()
+            }
+        })
     }
 
     private fun getToken() {
@@ -186,7 +196,7 @@ class ProfileInfoFragment : BaseFragment() {
             }
 
             val profileImagePath =
-                firebaseAuth.currentUser.phoneNumber + "/profileImage" + "/" + myfie.name
+                userPhoneNumber + "/profileImage" + "/" + myfie.name
 //        val bucketName = "contactsharing113011-dev."
 //        imageS3Url = "https://"+bucketName+"s3.amazonaws.com/"+"public/"+profileImagePath
 //        imageS3Url= imageS3Url.replace("+","%2B")
@@ -209,13 +219,13 @@ class ProfileInfoFragment : BaseFragment() {
     }
 
     private fun uploadDataToDataStore() {
-        val phoneNumber = firebaseAuth.currentUser.phoneNumber
-        val countryCode = phoneNumber.substring(0, 3)
+
+        val countryCode = userPhoneNumber?.substring(0, 3)
         printLog("country code= " + countryCode)
 
         // userContactSharing!!.id(phoneNumber)
         userContactSharing!!.name(name)
-        userContactSharing!!.phone(firebaseAuth.currentUser.phoneNumber)
+        userContactSharing!!.phone(userPhoneNumber)
         userContactSharing!!.countryCode(countryCode)
         imagekey?.let {
             userContactSharing!!.image(imagekey)
@@ -233,7 +243,7 @@ class ProfileInfoFragment : BaseFragment() {
 
                 var userExists = false
                 response.data.items.forEach { userO ->
-                    if (userO.phone.equals(phoneNumber)) {
+                    if (userO.phone.equals(userPhoneNumber)) {
                         printLog("user already exists")
                         userExists = true
                         userContactSharing!!.id(userO.id)
@@ -254,7 +264,7 @@ class ProfileInfoFragment : BaseFragment() {
                                 runOnUiThread() {
                                     hideLoading()
                                     Toast.makeText(
-                                        requireContext(), "User Creation Failed ", Toast
+                                        requireContext(), "User Updation Failed ", Toast
                                             .LENGTH_LONG
                                     ).show()
                                 }
@@ -262,13 +272,7 @@ class ProfileInfoFragment : BaseFragment() {
                             } else {
 
                                 sessionManager.createUserLoginSession(user)
-                                runOnUiThread() {
-                                    hideLoading()
-                                    Toast.makeText(
-                                        requireContext(), "User Created", Toast
-                                            .LENGTH_SHORT
-                                    ).show()
-                                }
+
                                 lads.contancsharing.www.utils.Helper.startActivity(
                                     requireActivity(),
                                     Intent(requireContext(), MainActivity::class.java),
@@ -306,12 +310,7 @@ class ProfileInfoFragment : BaseFragment() {
 
                                 sessionManager.createUserLoginSession(user)
 
-                                runOnUiThread() {
-                                    Toast.makeText(
-                                        requireContext(), "User Created", Toast
-                                            .LENGTH_LONG
-                                    ).show()
-                                }
+
                                 lads.contancsharing.www.utils.Helper.startActivity(
                                     requireActivity(),
                                     Intent(requireContext(), MainActivity::class.java),
@@ -335,8 +334,23 @@ class ProfileInfoFragment : BaseFragment() {
 
             } else {
 ///error
+                runOnUiThread {
+                    hideLoading()
+                    Toast.makeText(
+                        requireContext(), "User Creation Failed", Toast
+                            .LENGTH_LONG
+                    ).show()
+                }
             }
-        }, {})
+        }, {
+            runOnUiThread {
+                hideLoading()
+                Toast.makeText(
+                    requireContext(), "User Creation Failed ${it.cause}", Toast
+                        .LENGTH_LONG
+                ).show()
+            }
+        })
 
 
     }

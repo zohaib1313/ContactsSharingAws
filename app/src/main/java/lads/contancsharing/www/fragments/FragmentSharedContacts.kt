@@ -19,13 +19,9 @@ import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.ContactSharingWith
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.ContactsDownloadViewActivity
-import lads.contancsharing.www.adapters.AdapterContactsReceivedShared
+import lads.contancsharing.www.adapters.AdapterContactsShared
 import lads.contancsharing.www.callBacks.OnItemClickListener
 
 import lads.contancsharing.www.databinding.FragmentSharedContactsBinding
@@ -43,7 +39,7 @@ class FragmentSharedContacts : BaseFragment() {
 
     lateinit var mBinding: FragmentSharedContactsBinding
     private lateinit var rvReceivedContacts: RecyclerView
-    private lateinit var adapterContactsReceivedShared: AdapterContactsReceivedShared
+    private lateinit var adapterContactsShared: AdapterContactsShared
     private var dataListAdapterItem = ArrayList<ModelSharingContactWith>()
     private var dataListAllContactsWith = ArrayList<ModelSharingContactWith>()
     private var dataListFilteredContacts = ArrayList<ModelSharingContactWith>()
@@ -66,11 +62,11 @@ class FragmentSharedContacts : BaseFragment() {
         dataListAdapterItem.clear()
         dataListAllContactsWith.clear()
         rvReceivedContacts.layoutManager = LinearLayoutManager(requireContext())
-        adapterContactsReceivedShared =
-            AdapterContactsReceivedShared(requireContext(), dataListAdapterItem)
-        rvReceivedContacts.adapter = adapterContactsReceivedShared
-        adapterContactsReceivedShared.notifyDataSetChanged()
-        adapterContactsReceivedShared.setOnItemClickListener(object : OnItemClickListener {
+        adapterContactsShared =
+            AdapterContactsShared(requireContext(), dataListAdapterItem)
+        rvReceivedContacts.adapter = adapterContactsShared
+        adapterContactsShared.notifyDataSetChanged()
+        adapterContactsShared.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int, character: String) {
                 if (view.id == R.id.btnViewDownload) {
                     printLog("radio selected")
@@ -79,8 +75,16 @@ class FragmentSharedContacts : BaseFragment() {
                     val intent = Intent(requireContext(), ContactsDownloadViewActivity::class.java)
                     val item = dataListAdapterItem[position]
 
+
+
                     printLog(item.sharingWithCloudModel.filePath)
-                    intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.sharingWithCloudModel))
+                   // intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.sharingWithCloudModel))
+
+                    intent.putExtra("keyName",item.sharingWithCloudModel.user.name)
+                    intent.putExtra("keyImage",item.sharingWithCloudModel.user.image)
+                    intent.putExtra("keyFilePath",item.sharingWithCloudModel.filePath)
+
+
                     Helper.startActivity(requireActivity(), intent, false)
                 }
 
@@ -196,7 +200,7 @@ class FragmentSharedContacts : BaseFragment() {
                             }
                             ThreadUtils.runOnUiThread() {
                                 hideLoading()
-                                adapterContactsReceivedShared.notifyDataSetChanged()
+                                adapterContactsShared.notifyDataSetChanged()
                             }
                         }
 
@@ -236,6 +240,7 @@ class FragmentSharedContacts : BaseFragment() {
         }
         return position
     }
+
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {
         val mFragmentTransaction: FragmentTransaction =
             activity?.supportFragmentManager!!.beginTransaction()
@@ -244,6 +249,7 @@ class FragmentSharedContacts : BaseFragment() {
         if (needToAddBackstack) mFragmentTransaction.addToBackStack(null)
         mFragmentTransaction.commit()
     }
+
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -263,6 +269,7 @@ class FragmentSharedContacts : BaseFragment() {
             searchFromList(it.searchString.trim())
         }
     }
+
     private fun searchFromList(newText: String) {
         showLoading()
         dataListFilteredContacts.clear()
@@ -281,7 +288,7 @@ class FragmentSharedContacts : BaseFragment() {
         if (dataListFilteredContacts.isNotEmpty()) {
             dataListAdapterItem.clear()
             dataListAdapterItem.addAll(dataListFilteredContacts)
-            adapterContactsReceivedShared.notifyDataSetChanged()
+            adapterContactsShared.notifyDataSetChanged()
         }
     }
 

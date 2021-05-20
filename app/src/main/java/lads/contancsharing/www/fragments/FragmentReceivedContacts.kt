@@ -7,11 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.dynamicfeatures.Constants
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alphabetik.Alphabetik
@@ -20,15 +18,16 @@ import com.amplifyframework.api.ApiException
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.ContactSharingWith
+import com.amplifyframework.datastore.generated.model.UserContactSharing
 import com.google.gson.Gson
 
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.ContactsDownloadViewActivity
-import lads.contancsharing.www.adapters.AdapterContactsReceivedShared
+import lads.contancsharing.www.adapters.AdapterReceivedContacts
 import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentReceivedContactsBinding
 import lads.contancsharing.www.models.MessageEvent
-import lads.contancsharing.www.models.ModelSharingContactWith
+import lads.contancsharing.www.models.ModelReceivedContacts
 import lads.contancsharing.www.utils.AppConstant
 import lads.contancsharing.www.utils.Helper
 import org.greenrobot.eventbus.EventBus
@@ -42,11 +41,11 @@ class FragmentReceivedContacts : BaseFragment() {
 
     lateinit var mBinding: FragmentReceivedContactsBinding
     private lateinit var rvReceivedContacts: RecyclerView
-    private lateinit var adapterContactsReceivedShared: AdapterContactsReceivedShared
+    private lateinit var adapterReceivedContacts: AdapterReceivedContacts
 
-    private var dataListAdapterItem = ArrayList<ModelSharingContactWith>()
-    private var dataListAllContactsWith = ArrayList<ModelSharingContactWith>()
-    private var dataListFilteredContacts = ArrayList<ModelSharingContactWith>()
+    private var dataListAdapterItem = ArrayList<ModelReceivedContacts>()
+    private var dataListAllContactsWith = ArrayList<ModelReceivedContacts>()
+    private var dataListFilteredContacts = ArrayList<ModelReceivedContacts>()
 
 
     override fun onAttach(context: Context) {
@@ -66,11 +65,11 @@ class FragmentReceivedContacts : BaseFragment() {
         rvReceivedContacts.layoutManager = LinearLayoutManager(requireContext())
         dataListAdapterItem.clear()
         dataListAllContactsWith.clear()
-        adapterContactsReceivedShared =
-            AdapterContactsReceivedShared(requireContext(), dataListAdapterItem)
-        rvReceivedContacts.adapter = adapterContactsReceivedShared
-        adapterContactsReceivedShared.notifyDataSetChanged()
-        adapterContactsReceivedShared.setOnItemClickListener(object : OnItemClickListener {
+        adapterReceivedContacts =
+            AdapterReceivedContacts(requireContext(), dataListAdapterItem)
+        rvReceivedContacts.adapter = adapterReceivedContacts
+        adapterReceivedContacts.notifyDataSetChanged()
+        adapterReceivedContacts.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int, character: String) {
                 if (view.id == R.id.btnViewDownload) {
                     printLog("radio selected")
@@ -79,8 +78,12 @@ class FragmentReceivedContacts : BaseFragment() {
                     val intent = Intent(requireContext(), ContactsDownloadViewActivity::class.java)
                     val item = dataListAdapterItem[position]
 
-                    printLog(item.sharingWithCloudModel.filePath)
-                    intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.sharingWithCloudModel))
+                 //   intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.contactSharingWith))
+                    intent.putExtra("keyName",item.user.name)
+                    intent.putExtra("keyImage",item.user.image)
+                    intent.putExtra("keyFilePath",item.contactSharingWith.filePath)
+
+
                     Helper.startActivity(requireActivity(), intent, false)
                 }
 
@@ -102,6 +105,8 @@ class FragmentReceivedContacts : BaseFragment() {
     private fun getListOfReceivedContacts() {
         showLoading()
         try {
+            printLog(sessionManager.user.phone)
+
             val request = ModelQuery.list(ContactSharingWith::class.java)
             printLog(sessionManager.user.id)
             Amplify.API
@@ -109,7 +114,7 @@ class FragmentReceivedContacts : BaseFragment() {
                     request, { response ->
                         ///received contacts
                         if (response.hasData() && !response.hasErrors()) {
-                            printLog("no error in response and has data")
+                            printLog("no error in response")
                             response.data.items.forEach { item ->
                                 printLog(item.user.id)
                                 if (item.user.id == sessionManager.user.id) {
@@ -118,8 +123,6 @@ class FragmentReceivedContacts : BaseFragment() {
                                     getFileSizeAndAddToList(item)
                                 }
                             }
-
-
                         } else {
                             //no data found
                             printLog("no data found for contacts received")
@@ -160,7 +163,7 @@ class FragmentReceivedContacts : BaseFragment() {
     }
 
     private fun getFileSizeAndAddToList(item: ContactSharingWith?) {
-
+showLoading()
         item?.let { contactSharingWith ->
             var folderName: String? = contactSharingWith.filePath.substringBeforeLast("/")
             folderName = "$folderName/"
@@ -175,23 +178,46 @@ class FragmentReceivedContacts : BaseFragment() {
                         result.items.forEach { file ->
                             if (file.key == contactSharingWith.filePath) {
                                 printLog(file.key)
-                                dataListAdapterItem.add(
-                                    ModelSharingContactWith(
-                                        contactSharingWith,
-                                        file.size.toString()
-                                    )
+                                val request = ModelQuery.list(
+                                    UserContactSharing::class.java,
+                                    UserContactSharing.ID.eq(contactSharingWith.userId)
                                 )
-                                dataListAllContactsWith.add(
-                                    ModelSharingContactWith(
-                                        contactSharingWith,
-                                        file.size.toString()
-                                    )
-                                )
+                                Amplify.API.query(request, { response ->
+                                    if (response.hasData()) {
+                                        response.data.forEach { user ->
+                                            printLog(user.name)
+                                            dataListAdapterItem.add(
+                                                ModelReceivedContacts(
+                                                    user,
+                                                    file.size.toString(),
+                                                    file.lastModified.toString(), item
+                                                )
+                                            )
+                                            dataListAllContactsWith.add(
+                                                ModelReceivedContacts(
+                                                    user,
+                                                    file.size.toString(),
+                                                    file.lastModified.toString(), item
+                                                )
+                                            )
+                                            ThreadUtils.runOnUiThread {
+                                                adapterReceivedContacts.notifyDataSetChanged()
+                                            }
+                                        }
+                                    }
+
+                                }, {
+
+                                    ThreadUtils.runOnUiThread {
+                                        hideLoading()
+                                    }
+                                })
+
 
                             }
                             ThreadUtils.runOnUiThread() {
                                 hideLoading()
-                                adapterContactsReceivedShared.notifyDataSetChanged()
+                                adapterReceivedContacts.notifyDataSetChanged()
                             }
                         }
 
@@ -244,7 +270,7 @@ class FragmentReceivedContacts : BaseFragment() {
         showLoading()
         dataListFilteredContacts.clear()
         dataListAllContactsWith.forEach { info ->
-            if (info.sharingWithCloudModel.user.name.toLowerCase(Locale.ROOT).contains(
+            if (info.user.name.toLowerCase(Locale.ROOT).contains(
                     newText.toLowerCase(Locale.ROOT)
                         .toString()
                 )
@@ -258,14 +284,14 @@ class FragmentReceivedContacts : BaseFragment() {
         if (dataListFilteredContacts.isNotEmpty()) {
             dataListAdapterItem.clear()
             dataListAdapterItem.addAll(dataListFilteredContacts)
-            adapterContactsReceivedShared.notifyDataSetChanged()
+            adapterReceivedContacts.notifyDataSetChanged()
         }
     }
 
     private fun getPositionFromData(character: String): Int {
         var position = 0;
         for (contact in dataListAdapterItem) {
-            val letter = contact.sharingWithCloudModel.user.name[0]
+            val letter = contact.user.name[0]
             if (letter.equals(character[0], true)) {
                 return position;
             }

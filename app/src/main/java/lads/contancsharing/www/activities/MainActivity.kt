@@ -1,6 +1,5 @@
 package lads.contancsharing.www.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -14,12 +13,8 @@ import lads.contancsharing.www.databinding.ActivityMainBinding
 import lads.contancsharing.www.fragments.ContactsFragment
 import lads.contancsharing.www.fragments.HistoryFragment
 import lads.contancsharing.www.fragments.ProfileFragment
-import lads.contancsharing.www.fragments.ReceiveFragment
-import lads.contancsharing.www.models.MessageEvent
+import lads.contancsharing.www.fragments.NotificationFragment
 import lads.contancsharing.www.utils.Helper
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class MainActivity : BaseActivity() {
     private var mFragmentManager: FragmentManager? = null
@@ -56,7 +51,7 @@ class MainActivity : BaseActivity() {
             }
             R.id.actionReceive -> {
                 if (activeTabId != R.id.actionReceive) {
-                    changeFragment(ReceiveFragment.newInstance(0), false)
+                    changeFragment(NotificationFragment.newInstance(0), false)
                 }
 
             }

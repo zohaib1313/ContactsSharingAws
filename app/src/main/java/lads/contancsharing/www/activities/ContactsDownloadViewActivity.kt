@@ -70,34 +70,46 @@ class ContactsDownloadViewActivity : BaseActivity() {
         }
 
 
-        intent.getStringExtra(AppConstant.KEY_DATA)?.let { jsonObject ->
-            senderUser = Gson().fromJson(jsonObject, ContactSharingWith::class.java)
+//        intent.getStringExtra(AppConstant.KEY_DATA)?.let { jsonObject ->
+//            senderUser = Gson().fromJson(jsonObject, ContactSharingWith::class.java)
+//
+//            senderUser?.let {
+//                it.user?.let { otherUser ->
+//                    printLog(otherUser.name)
+//
+//                    otherUser.image?.let { img ->
+//
+//                    }
+//                }
+//                //   printLog(it.filePath.toString())
+//                it.filePath?.let { filePath ->
+//
+//                }
+//            }
+//        }
 
-            senderUser?.let {
-                it.user?.let { otherUser ->
-                    printLog(otherUser.name)
-                    mBinding.tvTitleContacts.text = otherUser.name.toString()
-                    otherUser.image?.let { img ->
-                        Glide.with(mContext).load(Helper.getImageUrl(img.toString()))
-                            .placeholder(R.drawable.eclipse)
+
+        intent.getStringExtra("keyName")?.let {
+            mBinding.tvTitleContacts.text = it.toString()
+        }
+        intent.getStringExtra("keyImage")?.let {
+            Glide.with(mContext).load(Helper.getImageUrl(it.toString()))
+                .placeholder(R.drawable.eclipse)
 //                    .skipMemoryCache(true)
 //                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .into(mBinding.ivUser)
-                    }
-                }
-                printLog(it.filePath.toString())
-                it.filePath?.let { filePath ->
-                    if (alreadyExists(filePath)) {
-                        printLog("file already exists")
-                        readFiles(filePath)
+                .into(mBinding.ivUser)
+        }
+        intent.getStringExtra("keyFilePath")?.let {
+            if (alreadyExists(it)) {
+                printLog("file already exists")
+                readFiles(it)
 
-                    } else {
-                        printLog("file doesnot exists")
-                        downloadCsv(filePath)
-                    }
-                }
+            } else {
+                printLog("file doesnot exists")
+                downloadCsv(it)
             }
         }
+
 
     }
 

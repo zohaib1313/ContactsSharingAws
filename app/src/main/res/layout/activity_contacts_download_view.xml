@@ -14,23 +14,23 @@
         android:layout_height="match_parent"
 
         android:background="@color/white"
-        android:paddingStart="@dimen/_8sdp"
-        android:paddingEnd="@dimen/_8sdp">
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingEnd="@dimen/_16sdp">
 
         <RelativeLayout
             android:id="@+id/rlHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:paddingStart="@dimen/_8sdp"
-            android:paddingEnd="@dimen/_8sdp">
+            android:layout_alignParentTop="true">
 
             <ImageView
                 android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tvTitleContacts"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+
                 android:src="@drawable/ic_baseline_arrow_back_ios_24" />
 
             <TextView
@@ -38,7 +38,7 @@
                 style="@style/AppTextViewBold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+
                 android:layout_toStartOf="@+id/ivUser"
                 android:layout_toEndOf="@+id/backButton"
                 android:fontFamily="@font/poppins_semibold"
@@ -84,9 +84,9 @@
             <com.alphabetik.Alphabetik
                 android:id="@+id/alphSectionIndex"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:padding="@dimen/_16sdp"
+                android:padding="@dimen/_20sdp"
                 app:itemsColor="@color/app_color_blue" />
 
         </LinearLayout>
@@ -98,9 +98,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:layout_margin="@dimen/_4sdp"
-        android:background="@color/white"
-        android:fitsSystemWindows="true"
+
+        android:background="@drawable/bottom_nav_shape"
+
         android:orientation="vertical">
 
         <TextView

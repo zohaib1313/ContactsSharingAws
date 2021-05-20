@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="@dimen/_16sdp"
+    android:paddingEnd="@dimen/_16sdp"
     tools:context=".fragments.ProfileFragment">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -22,30 +24,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.12" />
+        app:layout_constraintGuide_percent="0.07" />
 
-    <ImageView
-        android:id="@+id/imageView"
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_camera"
+        android:background="@drawable/round_shape"
         app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
         app:layout_constraintEnd_toEndOf="@+id/circleImageView"
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
         app:layout_constraintTop_toTopOf="@+id/circleImageView"
-        app:layout_constraintVertical_bias="0.95" />
+        app:layout_constraintVertical_bias="0.95">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageView"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_4sdp"
+            android:background="@drawable/icon_camera"
+
+
+            />
+    </RelativeLayout>
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:src="@drawable/ic_baseline_arrow_back_ios_24"
         app:layout_constraintBottom_toBottomOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintTop_toTopOf="@+id/textView2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
@@ -59,6 +70,7 @@
         style="@style/AppTextViewBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
         android:fontFamily="@font/poppins_semibold"
         android:gravity="start"
         android:text="@string/edit_profile"
@@ -68,37 +80,23 @@
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
-
-    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.46" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="0.41" />
 
     <ImageView
 
         android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
         android:src="@drawable/icon_profile"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
     <TextView
+
         android:id="@+id/textView3"
         style="@style/AppTextViewBold"
         android:layout_width="0dp"
@@ -109,80 +107,73 @@
         android:textSize="@dimen/_12sdp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
     <EditText
 
-        android:enabled="false"
         android:id="@+id/textView4"
         style="@style/AppTextViewNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:gravity="start"
+        android:padding="@dimen/_4sdp"
         android:text="Amir"
         android:textColor="@color/app_color_gray"
         app:layout_constraintEnd_toEndOf="@+id/textView3"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/imageView5"
         android:layout_width="0dp"
         android:layout_height="1px"
         android:layout_marginEnd="@dimen/_30sdp"
-        android:layout_marginRight="@dimen/_30sdp"
         android:src="@color/app_color_gray"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
         android:src="@drawable/call"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView5" />
 
     <TextView
-        android:layout_marginTop="@dimen/_20sdp"
         android:id="@+id/textView5"
         style="@style/AppTextViewBold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
         android:gravity="start"
         android:text="Mobile Number"
         android:textColor="@color/black"
         android:textSize="@dimen/_12sdp"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <TextView
+    <EditText
+
+        android:id="@+id/textView6"
         style="@style/AppTextViewNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:gravity="start"
-        android:text="+9212345678"
+        android:padding="@dimen/_4sdp"
+        android:text="0300000000"
         android:textColor="@color/app_color_gray"
-        android:id="@+id/textView6"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-    <ImageView
-        android:layout_marginEnd="@dimen/_30sdp"
-        android:layout_width="0dp"
-        android:layout_height="1px"
-        android:src="@color/app_color_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <Button
 
@@ -194,8 +185,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-<include layout="@layout/loadin_layout"
-    android:id="@+id/pgb"/>
+
+    <include
+        android:id="@+id/pgb"
+        layout="@layout/loadin_layout" />
+
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
@@ -205,5 +199,12 @@
         app:layout_constraintBottom_toTopOf="@+id/btnSignOut"
         app:layout_constraintEnd_toEndOf="@+id/btnSignOut"
         app:layout_constraintStart_toStartOf="@+id/btnSignOut" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

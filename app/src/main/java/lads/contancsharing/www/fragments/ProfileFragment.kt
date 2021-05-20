@@ -55,7 +55,7 @@ class ProfileFragment : BaseFragment() {
         mBinding.imageView2.setOnClickListener {
 //            EventBus.getDefault().post("selectContacts")
 //            printLog("sending event")
-            MainActivity.bottomNavView.selectedItemId=R.id.actionContacts
+            MainActivity.bottomNavView.selectedItemId = R.id.actionContacts
         }
 
         currentUser?.let {
@@ -72,6 +72,8 @@ class ProfileFragment : BaseFragment() {
             mBinding.textView4.setText(it.name.toString())
             imageKey = it.image
 
+
+            mBinding.textView6.setText(it.phone.toString())
         }
 
         mBinding.imageView.setOnClickListener {
@@ -166,19 +168,19 @@ class ProfileFragment : BaseFragment() {
                         ThreadUtils.runOnUiThread() {
                             hideLoading()
                             Toast.makeText(
-                                requireContext(), "User updation Failed ", Toast
+                                requireContext(), "Failed ${it.errors.toString()}", Toast
                                     .LENGTH_LONG
                             ).show()
                         }
                     } else {
                         sessionManager.updateUserSession(userContactSharing)
-                        ThreadUtils.runOnUiThread() {
-                            hideLoading()
-                            Toast.makeText(
-                                requireContext(), "User updated", Toast
-                                    .LENGTH_LONG
-                            ).show()
-                        }
+//                        ThreadUtils.runOnUiThread() {
+//                            hideLoading()
+//                            Toast.makeText(
+//                                requireContext(), "User updated", Toast
+//                                    .LENGTH_LONG
+//                            ).show()
+//                        }
                     }
                 },
                 {

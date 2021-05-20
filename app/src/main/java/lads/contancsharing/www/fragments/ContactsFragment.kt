@@ -13,7 +13,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
 import android.view.*
-import android.widget.Toast
+
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.app.ActivityCompat
@@ -27,6 +27,7 @@ import lads.contancsharing.www.R
 import lads.contancsharing.www.adapters.ContactListRecyclerViewAdapter
 import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentContactsBinding
+
 import lads.contancsharing.www.models.ContactsInfo
 import java.util.*
 import kotlin.collections.ArrayList
@@ -211,9 +212,9 @@ class ContactsFragment : BaseFragment() {
 
         if (selectedItemsCount > 0) {
             mBinding.tvTitleContacts.text = "Selected Contacts $selectedItemsCount"
-            mBinding.fab.background = getDrawable(requireContext(), R.drawable.fillfab_icon)
+            mBinding.fab.setImageDrawable(getDrawable(requireContext(), R.drawable.fillfab_icon))
         } else {
-            mBinding.fab.background = getDrawable(requireContext(), R.drawable.fab_icon)
+            mBinding.fab.setImageDrawable(getDrawable(requireContext(), R.drawable.fab_icon))
             mBinding.tvTitleContacts.text = "Select Contacts"
         }
     }

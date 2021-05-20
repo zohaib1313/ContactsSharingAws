@@ -2,17 +2,15 @@ package lads.contancsharing.www.fragments
 
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.constraintlayout.solver.widgets.Helper
 import androidx.fragment.app.FragmentTransaction
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.UserStateDetails
 import com.amplifyframework.core.Amplify
@@ -21,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
 import lads.contancsharing.www.R
 import lads.contancsharing.www.databinding.FragmentLoginBinding
 import java.util.concurrent.TimeUnit
@@ -34,32 +31,33 @@ class LoginFragment : BaseFragment() {
     private var mVerificationId: String? = null
 
     //Progress Dialog
-    private lateinit var progressDialog: ProgressDialog
+
     private lateinit var firebaseAuth: FirebaseAuth
     override fun onAttach(context: Context) {
         super.onAttach(context)
         isAttached = true
     }
 
+    private lateinit var phoneNumber: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         firebaseAuth = FirebaseAuth.getInstance()
-
-
         mBinding = FragmentLoginBinding.inflate(layoutInflater)
+        loadingLayout = mBinding.loadingLayout.rlLoading
         mBinding.btnNext.setOnClickListener {
 
             if (validateForm()) {
                 printLog(mBinding.etCountryCode.selectedCountryCodeWithPlus)
 
-                val phoneNumber =
+                phoneNumber =
                     mBinding.etCountryCode.selectedCountryCodeWithPlus + mBinding.etPhoneNumber.text.toString()
                         .trim()
                 lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
-                startPhoneNumberVerification(phoneNumber)
+                phoneNumber?.let {
+                    startPhoneNumberVerification(it)
+                }
             }
 
         }
@@ -69,9 +67,7 @@ class LoginFragment : BaseFragment() {
         }
 
 
-        progressDialog = ProgressDialog(requireContext())
-        progressDialog.setTitle("Please Wait")
-        progressDialog.setCanceledOnTouchOutside(false)
+
         vCallBacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
                 printLog("onVerificationCompletede")
@@ -82,7 +78,9 @@ class LoginFragment : BaseFragment() {
             override fun onVerificationFailed(e: FirebaseException) {
 
                 printLog("Verification failed " + e.localizedMessage)
-                progressDialog.dismiss()
+                ThreadUtils.runOnUiThread {
+                    hideLoading()
+                }
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
             }
 
@@ -92,8 +90,15 @@ class LoginFragment : BaseFragment() {
             ) {
                 mVerificationId = verificationId
                 forceResendingToken = token
-                progressDialog.dismiss()
-                changeFragment(VerifyOtpFragment.newInstance(0, verificationId), true)
+                hideLoading()
+                changeFragment(
+                    VerifyOtpFragment.newInstance(
+                        0,
+                        verificationId,
+                        phoneNumber,
+                        forceResendingToken!!
+                    ), false
+                )
 
             }
 
@@ -104,9 +109,7 @@ class LoginFragment : BaseFragment() {
 
     private fun startPhoneNumberVerification(phoneNumber: String) {
 
-        printLog("startPhoneNumberVerification: $phoneNumber")
-        progressDialog.setMessage("Verifying Phone Number...")
-        progressDialog.show()
+        showLoading()
 
         val phoneOptions = vCallBacks?.let {
             PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
@@ -153,7 +156,7 @@ class LoginFragment : BaseFragment() {
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         Log.d(TAG, "signInWithPhoneAuthCredential: ")
 
-        progressDialog.setMessage("Logging In")
+
         firebaseAuth.signInWithCredential(credential)
             .addOnSuccessListener {
                 //login success
@@ -174,7 +177,9 @@ class LoginFragment : BaseFragment() {
 //                requireActivity().finish()
             }
             .addOnFailureListener { e ->
-                progressDialog.dismiss()
+                ThreadUtils.runOnUiThread {
+                    hideLoading()
+                }
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
     }
@@ -192,7 +197,9 @@ class LoginFragment : BaseFragment() {
                 override fun onResult(userStateDetails: UserStateDetails?) {
                     printLog("Logged in...aws")
                     val phoneNumber = firebaseAuth.currentUser?.phoneNumber
-                    progressDialog.dismiss()
+                    ThreadUtils.runOnUiThread {
+                        hideLoading()
+                    }
 
 
                 }

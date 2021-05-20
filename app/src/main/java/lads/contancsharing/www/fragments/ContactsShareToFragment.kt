@@ -471,7 +471,7 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
                 val name =
                     contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
                 val number =
-                    contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                    contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).toString().replace("-","").replace(" ","")
                 var image =
                     contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI))
 
@@ -573,7 +573,7 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
     private fun changeFragment(fragment: Fragment, needToAddBackstack: Boolean) {
         val mFragmentTransaction: FragmentTransaction =
             activity?.supportFragmentManager!!.beginTransaction()
-        mFragmentTransaction.replace(R.id.fragmentContainerLogin, fragment)
+        mFragmentTransaction.replace(R.id.mainActivityFragmentContainer, fragment)
         mFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         if (needToAddBackstack) mFragmentTransaction.addToBackStack(null)
         mFragmentTransaction.commit()

@@ -9,14 +9,15 @@
 
     <color name="app_color_blue">#0599F3</color>
     <color name="app_color_white">#FFFFFFFF</color>
-    <color name="app_color_gray">#848484</color>
-    <color name="app_color_gray2">#E9E9E9</color>
+    <color name="app_color_gray">#7A7A7A</color>
+    <color name="app_color_gray2">#ffffff</color>
 
 
-
+    <color name="tab_color">#efefef</color>
     <!-- card colors -->
     <color name="card_background">#ffffff</color>
     <color name="card_shadow_1">#d4d4d4</color>
     <color name="card_shadow_2">#dddddd</color>
     <color name="transparent">#00000000</color>
+    <color name="alpha_white">#AAA9A9</color>
 </resources>
