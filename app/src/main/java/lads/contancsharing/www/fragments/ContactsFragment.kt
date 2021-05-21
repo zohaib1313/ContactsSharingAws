@@ -180,9 +180,14 @@ class ContactsFragment : BaseFragment() {
 
         hideLoading()
         if (listOfFilteredContacts.isNotEmpty()) {
+            hideNoDataLayout()
             listOfContacts.clear()
             listOfContacts.addAll(listOfFilteredContacts)
             adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+        }else{
+
+            showNoDataLayout()
+
         }
     }
 

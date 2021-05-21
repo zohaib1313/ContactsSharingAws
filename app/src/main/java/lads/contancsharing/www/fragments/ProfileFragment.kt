@@ -118,6 +118,7 @@ class ProfileFragment : BaseFragment() {
             mBinding.textView4.isEnabled = !mBinding.textView4.isEnabled
             if (mBinding.textView4.isEnabled) {
                 mBinding.textView4.requestFocus()
+                mBinding.textView4.setSelection(mBinding.textView4.text.toString().length)
             }
 
             if (mBinding.button2.text == "save") {
@@ -174,13 +175,13 @@ class ProfileFragment : BaseFragment() {
                         }
                     } else {
                         sessionManager.updateUserSession(userContactSharing)
-//                        ThreadUtils.runOnUiThread() {
-//                            hideLoading()
-//                            Toast.makeText(
-//                                requireContext(), "User updated", Toast
-//                                    .LENGTH_LONG
-//                            ).show()
-//                        }
+                        ThreadUtils.runOnUiThread() {
+                            hideLoading()
+                            Toast.makeText(
+                                requireContext(), "User updated", Toast
+                                    .LENGTH_LONG
+                            ).show()
+                        }
                     }
                 },
                 {

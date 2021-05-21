@@ -33,7 +33,7 @@
             android:layout_below="@+id/ivCross"
             android:text="Are you sure you want to send 7 contacts to"
             android:textColor="@color/app_color_blue"
-            android:textSize="@dimen/_10sdp" />
+            android:textSize="@dimen/_12sdp" />
 
         <RelativeLayout
             android:id="@+id/rlImage"
@@ -69,10 +69,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rlImage"
-            android:layout_margin="@dimen/_4sdp"
+
             android:text="Abdullah Malik"
             android:textColor="@color/black"
-            android:textSize="@dimen/_10sdp"
+            android:textSize="@dimen/_12sdp"
             android:textStyle="bold" />
 
         <TextView
@@ -82,12 +82,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
-            android:layout_margin="@dimen/_4sdp"
             android:text="+92 123123123"
             android:textColor="@color/app_color_gray"
-            android:textSize="@dimen/_9sdp" />
+            android:textSize="@dimen/_10sdp" />
 
         <LinearLayout
+            android:layout_marginTop="@dimen/_4sdp"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

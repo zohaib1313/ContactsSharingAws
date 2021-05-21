@@ -47,12 +47,7 @@
         android:layout_height="wrap_content"
     />
 
-    <include
-        android:id="@+id/loadingLayout"
-        layout="@layout/loadin_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/rlHeader" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -79,4 +74,8 @@
             app:itemsColor="@color/app_color_blue" />
 
     </LinearLayout>
+    <include
+        android:id="@+id/loadingLayout"
+        layout="@layout/loadin_layout"
+        />
 </RelativeLayout>

@@ -94,9 +94,13 @@
                 android:id="@+id/etPhoneNumber"
                 style="@style/AppTextViewNormal"
                 android:layout_width="0dp"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:maxLength="10"
+                android:digits="0123456789"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="2"
+                android:maxLines="1"
                 android:hint="@string/_123456789"
                 android:imeOptions="actionDone"
                 android:inputType="phone"
@@ -121,6 +125,7 @@
 
                 <soup.neumorphism.NeumorphButton
                     android:id="@+id/btnNext"
+
                     style="@style/ButtonShape"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

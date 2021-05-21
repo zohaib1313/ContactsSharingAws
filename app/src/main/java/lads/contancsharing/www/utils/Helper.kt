@@ -27,7 +27,9 @@ import com.amplifyframework.core.Amplify.Auth
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import lads.contancsharing.www.BuildConfig
 
 import lads.contancsharing.www.R
@@ -305,6 +307,32 @@ object Helper {
         return "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)}/${fileName}"
     }
 
+    fun getCurrentTimeStamp(): String {
+        return Date().time.toString()
+    }
+
+    fun saveDeviceTokenInSharedPref(context: Context) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.d(
+                    "com.lads.contactsharing",
+                    "Fetching FCM registration token failed",
+                    task.exception
+                )
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            SessionManager.getInstance(context).updateToken(token.toString())
+            Log.d("com.lads.contactsharing", "fcm token ===${token.toString()}")
+            //update in Aws app sync
+
+
+        })
+    }
+
     fun sessionRefresh() {
         val mUser = FirebaseAuth.getInstance().currentUser
         mUser!!.getIdToken(true)
@@ -312,8 +340,7 @@ object Helper {
                 if (task.isSuccessful) {
 
                     val idToken = task.result?.token
-                    Log.i("result is ", idToken.toString())
-
+                    Log.d("com.lads.contactsharing", "aws token==  ${idToken.toString()}")
                     // Send token to your backend via HTTPS
                     var mobileClient =
                         Auth.getPlugin("awsCognitoAuthPlugin").escapeHatch as AWSMobileClient?

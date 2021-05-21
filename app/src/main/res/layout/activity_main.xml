@@ -27,6 +27,7 @@
             app:labelVisibilityMode="labeled"
             android:id="@+id/bottomNavigationView"
             android:layout_width="match_parent"
+
             android:layout_height="@dimen/_54sdp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/bottom_nav_shape"

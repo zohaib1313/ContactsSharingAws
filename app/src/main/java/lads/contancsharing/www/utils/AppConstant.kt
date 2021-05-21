@@ -5,8 +5,10 @@ class AppConstant {
     companion object {
 
 
+        const val STATUS_ACCEPTED = "Accepted"
+        const val STATUS_REJECTED = "Rejected"
 
-        const val APP_NAME = "chocolala"
+        const val APP_NAME = "contactSharing"
         const val KEY_DATA = "key_data"
         const val KEY_NOTIFICATION_DATA = "key_notification_data"
         const val KEY_ID = "key_id"

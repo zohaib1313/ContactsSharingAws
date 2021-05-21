@@ -1,11 +1,22 @@
 package lads.contancsharing.www.activities
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import androidx.appcompat.widget.TooltipCompat
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amazonaws.mobile.client.Callback
+import com.amazonaws.mobile.client.UserStateDetails
+import com.amazonaws.mobile.config.AWSConfiguration
+import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration
+import com.amazonaws.mobileconnectors.pinpoint.PinpointManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 import lads.contancsharing.www.R
 import lads.contancsharing.www.databinding.ActivityMainBinding
 
@@ -22,6 +33,37 @@ class MainActivity : BaseActivity() {
 
     companion object {
         lateinit var bottomNavView: BottomNavigationView
+        val TAG: String = MainActivity::class.java.simpleName
+        private var pinpointManager: PinpointManager? = null
+        fun getPinpointManager(applicationContext: Context?): PinpointManager? {
+            if (pinpointManager == null) {
+                val awsConfig = AWSConfiguration(applicationContext)
+                AWSMobileClient.getInstance()
+                    .initialize(
+                        applicationContext,
+                        awsConfig,
+                        object : Callback<UserStateDetails?> {
+
+                            override fun onError(e: Exception?) {
+                                Log.e("INIT", "Initialization error.", e)
+                            }
+
+                            override fun onResult(result: UserStateDetails?) {
+                                Log.i("INIT", result?.userState.toString())
+                            }
+                        })
+                val pinpointConfig = PinpointConfiguration(
+                    applicationContext,
+                    AWSMobileClient.getInstance(),
+                    awsConfig
+                )
+                pinpointManager = PinpointManager(pinpointConfig)
+                val token: String = FirebaseMessaging.getInstance().token.toString()
+                pinpointManager!!.notificationClient.registerDeviceToken(token)
+
+            }
+            return pinpointManager
+        }
     }
 
 
@@ -38,6 +80,9 @@ class MainActivity : BaseActivity() {
             Helper.sessionRefresh()
         }
 
+        bottomNavView.menu.forEach { item ->
+            TooltipCompat.setTooltipText(findViewById(item.itemId), null)
+        }
     }
 
     var activeTabId = 0

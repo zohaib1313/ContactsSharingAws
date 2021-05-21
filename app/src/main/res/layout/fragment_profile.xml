@@ -31,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/round_shape"
+        android:padding="@dimen/_4sdp"
         app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
         app:layout_constraintEnd_toEndOf="@+id/circleImageView"
         app:layout_constraintHorizontal_bias="0.85"
@@ -40,15 +41,14 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView"
+            android:layout_width="@dimen/_14sdp"
+            android:layout_height="@dimen/_14sdp"
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_4sdp"
-            android:background="@drawable/icon_camera"
+            android:background="@drawable/ic_baseline_camera_alt_24"
+            android:padding="@dimen/_2sdp" />
 
-
-            />
     </RelativeLayout>
+
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
@@ -117,6 +117,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:enabled="false"
+        android:maxLines="1"
         android:gravity="start"
         android:padding="@dimen/_4sdp"
         android:text="Amir"

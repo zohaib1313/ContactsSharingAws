@@ -129,10 +129,13 @@ class LoginFragment : BaseFragment() {
             mBinding.etPhoneNumber.error =
                 getString(R.string.error_form_empty_field_of, "Phone number")
             isValid = false
-        } else if (mBinding.etPhoneNumber.text.toString().contains("+")) {
-            mBinding.etPhoneNumber.error = getString(R.string.erro_contain_country_code)
-            isValid = false
+
+        }else if(!android.util.Patterns.PHONE.matcher(mBinding.etPhoneNumber.text.toString()).matches() || mBinding.etPhoneNumber.text.toString().length!=10){
+            mBinding.etPhoneNumber.error = getString(R.string.not_valid_phone_number)
+            isValid=false
         }
+
+
         if (mBinding.etCountryCode.textView_selectedCountry.text.isNullOrEmpty()) {
             mBinding.etPhoneNumber.error =
                 getString(R.string.error_form_empty_field_of, "Phone number")

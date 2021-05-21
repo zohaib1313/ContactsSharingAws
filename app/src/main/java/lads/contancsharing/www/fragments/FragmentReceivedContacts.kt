@@ -20,12 +20,16 @@ import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.ContactSharingWith
 import com.amplifyframework.datastore.generated.model.UserContactSharing
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.ContactsDownloadViewActivity
 import lads.contancsharing.www.adapters.AdapterReceivedContacts
 import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentReceivedContactsBinding
+
 import lads.contancsharing.www.models.MessageEvent
 import lads.contancsharing.www.models.ModelReceivedContacts
 import lads.contancsharing.www.utils.AppConstant
@@ -61,7 +65,7 @@ class FragmentReceivedContacts : BaseFragment() {
         mBinding = FragmentReceivedContactsBinding.inflate(layoutInflater)
         rvReceivedContacts = mBinding.rvReceivedContacts
         loadingLayout = mBinding.loadingLayout.rlLoading
-
+        noDataFoundLayout = mBinding.noDataLayout.noDataChild
         rvReceivedContacts.layoutManager = LinearLayoutManager(requireContext())
         dataListAdapterItem.clear()
         dataListAllContactsWith.clear()
@@ -78,10 +82,10 @@ class FragmentReceivedContacts : BaseFragment() {
                     val intent = Intent(requireContext(), ContactsDownloadViewActivity::class.java)
                     val item = dataListAdapterItem[position]
 
-                 //   intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.contactSharingWith))
-                    intent.putExtra("keyName",item.user.name)
-                    intent.putExtra("keyImage",item.user.image)
-                    intent.putExtra("keyFilePath",item.contactSharingWith.filePath)
+                    //   intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.contactSharingWith))
+                    intent.putExtra("keyName", item.user.name)
+                    intent.putExtra("keyImage", item.user.image)
+                    intent.putExtra("keyFilePath", item.contactSharingWith.filePath)
 
 
                     Helper.startActivity(requireActivity(), intent, false)
@@ -91,12 +95,30 @@ class FragmentReceivedContacts : BaseFragment() {
         })
 
         lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
+
         getListOfReceivedContacts()
+//        runBlocking {
+//            val job = launch(Dispatchers.Default) {
+//
+//            }
+//            job.join()
+//            if(dataListAdapterItem.isEmpty()){
+//                printLog("empty....")
+//            }
+//        }
+
         val alphabetRv = mBinding.alphSectionIndex
         alphabetRv.onSectionIndexClickListener(Alphabetik.SectionIndexClickListener { view, position, character ->
             val info = " Position = $position Char = $character"
             Log.d("Tagggg ", "$view,$info")
-            mBinding.rvReceivedContacts.scrollToPosition(getPositionFromData(character))
+            if (dataListAdapterItem.isNotEmpty()) {
+                hideNoDataLayout()
+                mBinding.rvReceivedContacts.scrollToPosition(getPositionFromData(character))
+            } else {
+                showNoDataLayout()
+                hideLoading()
+            }
+
         })
 
         return mBinding.root
@@ -104,6 +126,7 @@ class FragmentReceivedContacts : BaseFragment() {
 
     private fun getListOfReceivedContacts() {
         showLoading()
+        hideNoDataLayout()
         try {
             printLog(sessionManager.user.phone)
 
@@ -114,20 +137,44 @@ class FragmentReceivedContacts : BaseFragment() {
                     request, { response ->
                         ///received contacts
                         if (response.hasData() && !response.hasErrors()) {
+                            var isLoadingCompleted = false
                             printLog("no error in response")
                             response.data.items.forEach { item ->
                                 printLog(item.user.id)
+
                                 if (item.user.id == sessionManager.user.id) {
                                     //   dataListReceivedContacts.add(item)
+                                    ThreadUtils.runOnUiThread {
+                                        showLoading()
+                                        hideNoDataLayout()
+                                    }
                                     printLog(item.toString())
                                     getFileSizeAndAddToList(item)
+                                } else {
+                                    ThreadUtils.runOnUiThread() {
+                                        hideLoading()
+                                        showNoDataLayout()
+                                        printLog("no data found for contacts received else")
+                                    }
                                 }
                             }
+//                            if (dataListAdapterItem.isEmpty()) {
+//                                ThreadUtils.runOnUiThread {
+//                                    hideLoading()
+//                                    showNoDataLayout()
+//                                }
+//                            } else {
+//                                ThreadUtils.runOnUiThread {
+//                                    hideNoDataLayout()
+//                                }
+//                            }
+
                         } else {
                             //no data found
                             printLog("no data found for contacts received")
                             ThreadUtils.runOnUiThread() {
                                 hideLoading()
+                                showNoDataLayout()
                                 Toast.makeText(
                                     requireContext(), "No Contacts Received ", Toast
                                         .LENGTH_LONG
@@ -139,6 +186,7 @@ class FragmentReceivedContacts : BaseFragment() {
                         printLog("no data found api exception ${it.cause}")
                         ThreadUtils.runOnUiThread() {
                             hideLoading()
+                            showNoDataLayout()
                             Toast.makeText(
                                 requireContext(), "No Contacts Received ", Toast
                                     .LENGTH_LONG
@@ -152,6 +200,7 @@ class FragmentReceivedContacts : BaseFragment() {
             printLog("no data found api exception ${error.cause}")
             ThreadUtils.runOnUiThread() {
                 hideLoading()
+                showNoDataLayout()
                 Toast.makeText(
                     requireContext(), "No Contacts Received ", Toast
                         .LENGTH_LONG
@@ -163,7 +212,7 @@ class FragmentReceivedContacts : BaseFragment() {
     }
 
     private fun getFileSizeAndAddToList(item: ContactSharingWith?) {
-showLoading()
+
         item?.let { contactSharingWith ->
             var folderName: String? = contactSharingWith.filePath.substringBeforeLast("/")
             folderName = "$folderName/"
@@ -184,6 +233,7 @@ showLoading()
                                 )
                                 Amplify.API.query(request, { response ->
                                     if (response.hasData()) {
+
                                         response.data.forEach { user ->
                                             printLog(user.name)
                                             dataListAdapterItem.add(
@@ -202,6 +252,17 @@ showLoading()
                                             )
                                             ThreadUtils.runOnUiThread {
                                                 adapterReceivedContacts.notifyDataSetChanged()
+
+                                            }
+                                        }
+
+                                        ThreadUtils.runOnUiThread {
+                                            if (dataListAdapterItem.isEmpty()) {
+                                                showNoDataLayout()
+                                                hideLoading()
+                                            } else {
+                                                hideNoDataLayout()
+
                                             }
                                         }
                                     }
@@ -215,9 +276,16 @@ showLoading()
 
 
                             }
-                            ThreadUtils.runOnUiThread() {
+
+                        }
+
+                        ThreadUtils.runOnUiThread {
+                            if (dataListAdapterItem.isEmpty()) {
+                                showNoDataLayout()
                                 hideLoading()
-                                adapterReceivedContacts.notifyDataSetChanged()
+                            } else {
+                                hideNoDataLayout()
+
                             }
                         }
 
@@ -282,9 +350,13 @@ showLoading()
 
         hideLoading()
         if (dataListFilteredContacts.isNotEmpty()) {
+            hideNoDataLayout()
             dataListAdapterItem.clear()
             dataListAdapterItem.addAll(dataListFilteredContacts)
             adapterReceivedContacts.notifyDataSetChanged()
+        } else {
+
+            showNoDataLayout()
         }
     }
 

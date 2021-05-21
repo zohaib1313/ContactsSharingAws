@@ -5,7 +5,7 @@
     <string name="contact_sharing_app">Contact Sharing App</string>
     <string name="we_need_your_mobile_number_for_login">We need your mobile number for login</string>
     <string name="enter_mobile_number">Enter Mobile Number</string>
-    <string name="_123456789">123456789</string>
+    <string name="_123456789">3001231231</string>
     <string name="next">Next</string>
     <string name="verify_login"><![CDATA[Verify & Login]]></string>
     <string name="done">Done</string>
@@ -26,5 +26,8 @@
     <string name="prompt_search">hint</string>
     <string name="denny">Denny</string>
     <string name="default_notification_channel_id">def</string>
+    <string name="not_valid_phone_number">Phone number is not valid</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
 
 </resources>

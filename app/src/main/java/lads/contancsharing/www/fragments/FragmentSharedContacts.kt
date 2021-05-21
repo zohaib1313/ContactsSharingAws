@@ -58,9 +58,10 @@ class FragmentSharedContacts : BaseFragment() {
 
         rvReceivedContacts = mBinding.rvContacts
         loadingLayout = mBinding.loadingLayout.rlLoading
-
+        noDataFoundLayout = mBinding.noDataLayout.noDataChild
         dataListAdapterItem.clear()
         dataListAllContactsWith.clear()
+
         rvReceivedContacts.layoutManager = LinearLayoutManager(requireContext())
         adapterContactsShared =
             AdapterContactsShared(requireContext(), dataListAdapterItem)
@@ -78,13 +79,11 @@ class FragmentSharedContacts : BaseFragment() {
 
 
                     printLog(item.sharingWithCloudModel.filePath)
-                   // intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.sharingWithCloudModel))
+                    // intent.putExtra(AppConstant.KEY_DATA, Gson().toJson(item.sharingWithCloudModel))
 
-                    intent.putExtra("keyName",item.sharingWithCloudModel.user.name)
-                    intent.putExtra("keyImage",item.sharingWithCloudModel.user.image)
-                    intent.putExtra("keyFilePath",item.sharingWithCloudModel.filePath)
-
-
+                    intent.putExtra("keyName", item.sharingWithCloudModel.user.name)
+                    intent.putExtra("keyImage", item.sharingWithCloudModel.user.image)
+                    intent.putExtra("keyFilePath", item.sharingWithCloudModel.filePath)
                     Helper.startActivity(requireActivity(), intent, false)
                 }
 
@@ -93,17 +92,30 @@ class FragmentSharedContacts : BaseFragment() {
 
 
         getListOfShredContacts()
+
+
         val alphabetRv = mBinding.alphSectionIndex
         alphabetRv.onSectionIndexClickListener(Alphabetik.SectionIndexClickListener { view, position, character ->
             val info = " Position = $position Char = $character"
             Log.d("Tagggg ", "$view,$info")
-            mBinding.rvContacts.scrollToPosition(getPositionFromData(character))
+
+
+            if (dataListAdapterItem.isNotEmpty()) {
+                hideNoDataLayout()
+                mBinding.rvContacts.scrollToPosition(getPositionFromData(character))
+            } else {
+                showNoDataLayout()
+                hideLoading()
+            }
+
+
         })
         return mBinding.root
     }
 
     private fun getListOfShredContacts() {
         showLoading()
+        hideNoDataLayout()
         try {
 
             val request = ModelQuery.list(
@@ -117,27 +129,54 @@ class FragmentSharedContacts : BaseFragment() {
 
                         ///received contacts
                         if (response.hasData() && !response.hasErrors()) {
-                            printLog("no error in response and has data")
+                            printLog("no error in response and has data shared frag")
 
                             response.data.items.forEach { item ->
 
                                 if (item.userId == sessionManager.user.id) {
                                     //   dataListReceivedContacts.add(item)
-                                    printLog(item.toString())
+                                    ThreadUtils.runOnUiThread {
+                                        showLoading()
+                                        hideNoDataLayout()
+                                    }
+
+                                    printLog(item.toString() + " item")
                                     getFileSizeAndAddToList(item)
+                                } else {
+                                    ThreadUtils.runOnUiThread {
+                                        hideLoading()
+                                        showNoDataLayout()
+                                    }
+
                                 }
                             }
-
+//                            if(dataListAdapterItem.isEmpty()){
+//                              ThreadUtils.runOnUiThread {
+//                                  hideLoading()
+//                                  showNoDataLayout()
+//                              }
+//                            }
+                            ThreadUtils.runOnUiThread() {
+                                hideLoading()
+                                if (dataListAdapterItem.isNotEmpty()) {
+                                    hideNoDataLayout()
+                                } else {
+                                    showNoDataLayout()
+                                }
+                                adapterContactsShared.notifyDataSetChanged()
+                            }
 
                         } else {
                             //no data found
-                            printLog("no data found for contacts received")
+                            printLog("no data found for contacts shared")
                             ThreadUtils.runOnUiThread() {
                                 hideLoading()
-                                Toast.makeText(
-                                    requireContext(), "No Contacts Received ", Toast
-                                        .LENGTH_LONG
-                                ).show()
+                                if (dataListAdapterItem.isNotEmpty()) {
+                                    hideNoDataLayout()
+                                } else {
+                                    showNoDataLayout()
+                                }
+                                adapterContactsShared.notifyDataSetChanged()
                             }
                         }
                     }, {
@@ -145,8 +184,9 @@ class FragmentSharedContacts : BaseFragment() {
                         printLog("no data found api exception ${it.cause}")
                         ThreadUtils.runOnUiThread() {
                             hideLoading()
+                            showNoDataLayout()
                             Toast.makeText(
-                                requireContext(), "No Contacts Received ", Toast
+                                requireContext(), "No Contacts Shared ", Toast
                                     .LENGTH_LONG
                             ).show()
                         }
@@ -158,8 +198,9 @@ class FragmentSharedContacts : BaseFragment() {
             printLog("no data found api exception ${error.cause}")
             ThreadUtils.runOnUiThread() {
                 hideLoading()
+                showNoDataLayout()
                 Toast.makeText(
-                    requireContext(), "No Contacts Received ", Toast
+                    requireContext(), "No Contacts Shared ", Toast
                         .LENGTH_LONG
                 ).show()
             }
@@ -198,18 +239,41 @@ class FragmentSharedContacts : BaseFragment() {
                                 )
 
                             }
-                            ThreadUtils.runOnUiThread() {
-                                hideLoading()
-                                adapterContactsShared.notifyDataSetChanged()
+
+                        }
+                        ThreadUtils.runOnUiThread() {
+                            hideLoading()
+                            if (dataListAdapterItem.isNotEmpty()) {
+                                hideNoDataLayout()
+                            } else {
+                                showNoDataLayout()
                             }
+                            adapterContactsShared.notifyDataSetChanged()
                         }
 
-
                     },
-                    { error -> printLog("error in getting size ${error.cause}") }
+                    { error -> printLog("error in getting size ${error.cause}")
+                        ThreadUtils.runOnUiThread() {
+                            hideLoading()
+                            if (dataListAdapterItem.isNotEmpty()) {
+                                hideNoDataLayout()
+                            } else {
+                                showNoDataLayout()
+                            }
+                            adapterContactsShared.notifyDataSetChanged()
+                        }}
                 )
 
             } catch (e: Exception) {
+                ThreadUtils.runOnUiThread() {
+                    hideLoading()
+                    if (dataListAdapterItem.isNotEmpty()) {
+                        hideNoDataLayout()
+                    } else {
+                        showNoDataLayout()
+                    }
+                    adapterContactsShared.notifyDataSetChanged()
+                }
                 printLog("error in getting size ${e.cause}")
             }
 
@@ -286,9 +350,12 @@ class FragmentSharedContacts : BaseFragment() {
 
         hideLoading()
         if (dataListFilteredContacts.isNotEmpty()) {
+            hideNoDataLayout()
             dataListAdapterItem.clear()
             dataListAdapterItem.addAll(dataListFilteredContacts)
             adapterContactsShared.notifyDataSetChanged()
+        } else {
+            showNoDataLayout()
         }
     }
 

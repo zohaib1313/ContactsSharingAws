@@ -6,9 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/_8sdp"
     android:layout_margin="@dimen/_8sdp"
-    android:layout_marginBottom="@dimen/_16sdp">
+    android:layout_marginBottom="@dimen/_16sdp"
+    app:cardCornerRadius="@dimen/_8sdp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         android:padding="@dimen/_12sdp">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/ivReceiveRow"
+            android:id="@+id/ivUserImage"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"
 
@@ -28,8 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginLeft="@dimen/_8sdp"
-            android:layout_toEndOf="@id/ivReceiveRow"
-            android:layout_toRightOf="@id/ivReceiveRow">
+            android:layout_toEndOf="@id/ivUserImage"
+            android:layout_toRightOf="@id/ivUserImage">
 
             <LinearLayout
                 android:id="@+id/lnrContent"
@@ -38,6 +38,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/userName"
                     style="@style/AppTextViewBold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -52,20 +53,20 @@
                     tools:ignore="RtlSymmetry" />
 
                 <TextView
+                    android:id="@+id/userPhoneNumber"
                     style="@style/AppTextViewNormal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:gravity="start"
                     android:maxLines="1"
-
                     android:text="+123456789"
                     android:textColor="@color/black"
                     tools:ignore="RtlSymmetry" />
 
                 <TextView
+                    android:id="@+id/notificationMessage"
                     style="@style/AppTextViewNormal"
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
@@ -78,6 +79,28 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/rlFinalStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lnrContent"
+                android:layout_marginTop="@dimen/_8sdp"
+               >
+
+                <TextView
+
+                    android:id="@+id/finalStatus"
+                    style="@style/AppTextViewBold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Accepted"
+                    android:textColor="@color/app_color_blue"
+                    android:textSize="@dimen/_10sdp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/rlStatuses"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/lnrContent"
@@ -94,7 +117,7 @@
                     android:paddingTop="@dimen/_4sdp"
                     android:paddingEnd="@dimen/_18sdp"
                     android:paddingBottom="@dimen/_4sdp"
-                    android:text="Accept"
+                    android:text="@string/accept"
                     app:cornerRadius="@dimen/_12sdp" />
 
                 <TextView
@@ -104,15 +127,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_16sdp"
 
-                    android:layout_marginLeft="@dimen/_16sdp"
                     android:layout_toEndOf="@id/btnAccept"
-                    android:layout_toRightOf="@id/btnAccept"
                     android:fontFamily="@font/poppins_regular"
                     android:paddingStart="@dimen/_18sdp"
                     android:paddingTop="@dimen/_4sdp"
                     android:paddingEnd="@dimen/_18sdp"
                     android:paddingBottom="@dimen/_4sdp"
-                    android:text="Decline"
+                    android:text="@string/decline"
                     app:cornerRadius="@dimen/_12sdp" />
 
             </RelativeLayout>

@@ -252,8 +252,23 @@ class ContactsDownloadViewActivity : BaseActivity() {
     fun showBottomSheet() {
         layoutBottomSheet.visibility = View.VISIBLE
 
-        layoutBottomSheet.findViewById<TextView>(R.id.title).text =
-            "${listOfSelectedContacts.size.toString()} Contacts Selected"
+
+        if(listOfSelectedContacts.size<2){
+            layoutBottomSheet.findViewById<TextView>(R.id.title).text =
+                "${listOfSelectedContacts.size.toString()} Contact Selected"
+
+        }else{
+            layoutBottomSheet.findViewById<TextView>(R.id.title).text =
+                "${listOfSelectedContacts.size.toString()} Contacts Selected"
+        }
+
+
+
+
+
+
+
+
 
         layoutBottomSheet.findViewById<ImageView>(R.id.btnSave).setOnClickListener {
 

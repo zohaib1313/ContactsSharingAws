@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.Toast
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.UserStateDetails
 import com.amplifyframework.core.Amplify
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import lads.contancsharing.www.databinding.ActivitySplashBinding
 import lads.contancsharing.www.fragments.ProfileInfoFragment
 
@@ -34,8 +37,11 @@ class SplashActivity :BaseActivity() {
          * and close this Splash-Screen after some seconds.*/
         /* New Handler to start the Menu-Activity
          * and close this Splash-Screen after some seconds.*/
+
+
         if (sessionManager.user != null) {
             Helper.sessionRefresh()
+
         }
         Handler().postDelayed(Runnable {
             val mainIntent = Intent(this@SplashActivity, SignUpActivity::class.java)

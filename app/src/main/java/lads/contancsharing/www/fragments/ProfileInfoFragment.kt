@@ -3,14 +3,11 @@ package lads.contancsharing.www.fragments
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.constraintlayout.solver.widgets.Helper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
@@ -27,6 +24,7 @@ import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.MainActivity
 
 import lads.contancsharing.www.databinding.FragmentProfileInfoBinding
+import lads.contancsharing.www.utils.Helper
 import java.io.File
 
 
@@ -36,7 +34,7 @@ class ProfileInfoFragment : BaseFragment() {
     lateinit var firebaseAuth: FirebaseAuth
     var filePath: String? = null
     var imagekey: String? = null
-    var idToken: String? = null
+    var deviceToken: String? = null
     var userExists = false
     var name: String? = null
     var userContactSharing: UserContactSharing.Builder? = null
@@ -56,7 +54,12 @@ class ProfileInfoFragment : BaseFragment() {
         userContactSharing = UserContactSharing.Builder()
         userPhoneNumber =
             firebaseAuth.currentUser.phoneNumber.toString().replace("-", "").replace(" ", "")
-        getToken()
+
+
+        ////saving token in sharedPref
+        Helper.saveDeviceTokenInSharedPref(requireContext())
+        getDeviceToken()
+
 
         mBinding.btnDone.setOnClickListener {
             if (mBinding.textView3.text.isNullOrEmpty()) {
@@ -165,14 +168,14 @@ class ProfileInfoFragment : BaseFragment() {
         })
     }
 
-    private fun getToken() {
-        firebaseAuth.currentUser.getIdToken(true)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    idToken = task.result?.token.toString()
-                    printLog("token =" + idToken)
-                }
-            }
+    private fun getDeviceToken() {
+
+        deviceToken = if (sessionManager.token != null) {
+            sessionManager.token
+        } else {
+            Helper.saveDeviceTokenInSharedPref(requireContext())
+            "null"
+        }
     }
 
 
@@ -231,8 +234,8 @@ class ProfileInfoFragment : BaseFragment() {
             userContactSharing!!.image(imagekey)
         }
 
-        idToken?.let {
-            userContactSharing!!.deviceToken(idToken)
+        deviceToken?.let {
+            userContactSharing!!.deviceToken(deviceToken)
         }
 
 

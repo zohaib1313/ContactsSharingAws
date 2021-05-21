@@ -29,6 +29,9 @@
 
     </LinearLayout>
     <include
+        android:id="@+id/noDataLayout"
+        layout="@layout/no_data_layout" />
+    <include
         android:id="@+id/loadingLayout"
         layout="@layout/loadin_layout" />
 </RelativeLayout>
