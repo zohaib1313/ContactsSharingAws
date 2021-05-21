@@ -225,14 +225,14 @@ class VerifyOtpFragment(
             object : com.amazonaws.mobile.client.Callback<UserStateDetails?> {
 
                 override fun onResult(userStateDetails: UserStateDetails?) {
-                    ThreadUtils.runOnUiThread {
-                        hideLoading()
-                    }
+
 
                     printLog("id= ${mobileClient.identityId}")
                     printLog("userDetails= ${userStateDetails?.details}")
                     changeFragment(ProfileInfoFragment.newInstance(0), true);
-
+                    ThreadUtils.runOnUiThread {
+                        hideLoading()
+                    }
                 }
 
                 override fun onError(e: Exception?) {

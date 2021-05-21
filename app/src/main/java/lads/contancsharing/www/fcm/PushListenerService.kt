@@ -22,6 +22,7 @@ import com.google.firebase.messaging.RemoteMessage
 import lads.contancsharing.www.R
 import lads.contancsharing.www.activities.MainActivity
 import lads.contancsharing.www.activities.MainActivity.Companion.getPinpointManager
+
 import lads.contancsharing.www.utils.AppConstant
 import lads.contancsharing.www.utils.SessionManager
 

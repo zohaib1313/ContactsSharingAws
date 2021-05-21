@@ -16,7 +16,7 @@
 
     </style>
     <style name="ButtonShape" parent="@style/Widget.Neumorph.Button">
-        <item name="neumorph_shadowElevation">2dp</item>
+
         <item name="neumorph_shadowColorDark">@color/app_color_gray</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_height">wrap_content</item>

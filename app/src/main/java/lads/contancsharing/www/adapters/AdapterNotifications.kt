@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.row_notifications.view.*
@@ -68,7 +69,6 @@ class AdapterNotifications(
                 binding.userPhoneNumber.text = fromUserNumber.toString()
 
                 fromUserImage.let {
-                    Log.d("asdf", it)
                     if (it != "") {
                         Glide.with(mContext).load(it).placeholder(R.drawable.eclipse)
                             .into(binding.ivUserImage)
@@ -81,13 +81,13 @@ class AdapterNotifications(
                         binding.rlFinalStatus.visibility = View.VISIBLE
                         binding.rlStatuses.visibility = View.GONE
                         binding.rlFinalStatus.finalStatus.text = AppConstant.STATUS_ACCEPTED
-
+                        binding.rlFinalStatus.finalStatus.setTextColor(ContextCompat.getColor(mContext,R.color.green))
                     }
                     AppConstant.STATUS_REJECTED -> {
                         binding.rlFinalStatus.visibility = View.VISIBLE
                         binding.rlStatuses.visibility = View.GONE
                         binding.rlFinalStatus.finalStatus.text = AppConstant.STATUS_REJECTED
-
+                        binding.rlFinalStatus.finalStatus.setTextColor(ContextCompat.getColor(mContext,R.color.red))
                     }
                     else -> {
                         binding.rlStatuses.visibility = View.VISIBLE

@@ -97,15 +97,6 @@ class FragmentReceivedContacts : BaseFragment() {
         lads.contancsharing.www.utils.Helper.hideKeyboard(requireActivity())
 
         getListOfReceivedContacts()
-//        runBlocking {
-//            val job = launch(Dispatchers.Default) {
-//
-//            }
-//            job.join()
-//            if(dataListAdapterItem.isEmpty()){
-//                printLog("empty....")
-//            }
-//        }
 
         val alphabetRv = mBinding.alphSectionIndex
         alphabetRv.onSectionIndexClickListener(Alphabetik.SectionIndexClickListener { view, position, character ->

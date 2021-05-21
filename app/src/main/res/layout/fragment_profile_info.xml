@@ -11,9 +11,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/_35sdp"
-        android:paddingEnd="@dimen/_35sdp"
-        android:paddingBottom="@dimen/_35sdp">
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_16sdp"
+        android:paddingBottom="@dimen/_30sdp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/circleImageView"
@@ -79,13 +80,13 @@
             app:layout_constraintGuide_percent="0.36" />
 
         <ImageView
-
+            android:layout_marginStart="@dimen/_6sdp"
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_profile"
             app:layout_constraintBottom_toBottomOf="@+id/textView3"
-            app:layout_constraintStart_toStartOf="@+id/relativeLayout"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView3" />
 
         <EditText
@@ -95,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4sdp"
             android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
             android:gravity="start"
             android:hint="@string/your_name"
             android:maxLines="1"
@@ -112,13 +114,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3">
 
-            <com.google.android.material.button.MaterialButton
+            <soup.neumorphism.NeumorphButton
                 android:id="@+id/btnDone"
-                style="@style/RoundedButtonBlue"
+                style="@style/ButtonShape"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/save" />
-
         </RelativeLayout>
 
         <include

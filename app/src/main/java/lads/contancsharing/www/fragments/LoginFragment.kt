@@ -90,7 +90,6 @@ class LoginFragment : BaseFragment() {
             ) {
                 mVerificationId = verificationId
                 forceResendingToken = token
-                hideLoading()
                 changeFragment(
                     VerifyOtpFragment.newInstance(
                         0,
