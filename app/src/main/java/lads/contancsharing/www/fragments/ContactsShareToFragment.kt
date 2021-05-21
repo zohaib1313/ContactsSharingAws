@@ -123,11 +123,7 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
         mBinding.rvContacts.adapter = adapterContactListRecyclerViewAdapter
         adapterContactListRecyclerViewAdapter.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int, character: String) {
-                Toast.makeText(
-                    requireContext(),
-                    listOfContacts[position].name,
-                    Toast.LENGTH_LONG
-                ).show()
+
                 showShareDialog(listOfContacts[position])
 
             }
@@ -219,9 +215,7 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
 
 
         yesBtn.setOnClickListener {
-            listOfContactsToShare.forEach { contactsInfo ->
-                printLog(contactsInfo.toString())
-            }
+
             saveFile(
                 Helper.exportDataToCSV(listOfContactsToShare),
                 contactsInfo.number,
@@ -275,7 +269,6 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
         Amplify.Storage.uploadFile(pathOnBucket, contactFile,
             {
                 printLog("folder path after upload= ${it.key}")
-
                 uploadUserData(receiverNumber, it.key, receiverName)
             },
             {

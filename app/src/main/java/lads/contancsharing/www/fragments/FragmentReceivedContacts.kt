@@ -116,11 +116,12 @@ class FragmentReceivedContacts : BaseFragment() {
     }
 
     private fun getListOfReceivedContacts() {
-        showLoading()
-        hideNoDataLayout()
+        ThreadUtils.runOnUiThread {
+            showLoading()
+            hideNoDataLayout()
+        }
         try {
             printLog(sessionManager.user.phone)
-
             val request = ModelQuery.list(ContactSharingWith::class.java)
             printLog(sessionManager.user.id)
             Amplify.API
@@ -128,37 +129,32 @@ class FragmentReceivedContacts : BaseFragment() {
                     request, { response ->
                         ///received contacts
                         if (response.hasData() && !response.hasErrors()) {
-                            var isLoadingCompleted = false
+                            var userFound = false
                             printLog("no error in response")
                             response.data.items.forEach { item ->
-                                printLog(item.user.id)
-
                                 if (item.user.id == sessionManager.user.id) {
                                     //   dataListReceivedContacts.add(item)
-                                    ThreadUtils.runOnUiThread {
-                                        showLoading()
-                                        hideNoDataLayout()
-                                    }
+                                    printLog("id matched...")
                                     printLog(item.toString())
                                     getFileSizeAndAddToList(item)
-                                } else {
-                                    ThreadUtils.runOnUiThread() {
-                                        hideLoading()
-                                        showNoDataLayout()
-                                        printLog("no data found for contacts received else")
-                                    }
+                                    userFound = true
+                                    return@forEach
                                 }
                             }
-//                            if (dataListAdapterItem.isEmpty()) {
-//                                ThreadUtils.runOnUiThread {
-//                                    hideLoading()
-//                                    showNoDataLayout()
-//                                }
-//                            } else {
-//                                ThreadUtils.runOnUiThread {
-//                                    hideNoDataLayout()
-//                                }
-//                            }
+
+
+                            if (!userFound) {
+                                ThreadUtils.runOnUiThread() {
+                                    printLog("outside thread for each...")
+                                    hideLoading()
+                                    if (dataListAdapterItem.isNotEmpty()) {
+                                        hideNoDataLayout()
+                                    } else {
+                                        showNoDataLayout()
+                                    }
+                                    adapterReceivedContacts.notifyDataSetChanged()
+                                }
+                            }
 
                         } else {
                             //no data found
@@ -207,26 +203,23 @@ class FragmentReceivedContacts : BaseFragment() {
         item?.let { contactSharingWith ->
             var folderName: String? = contactSharingWith.filePath.substringBeforeLast("/")
             folderName = "$folderName/"
-
             printLog(contactSharingWith.filePath)
-
             try {
-
                 Amplify.Storage.list(
                     folderName.toString(),
                     { result ->
+                        var isFileFound = false
                         result.items.forEach { file ->
                             if (file.key == contactSharingWith.filePath) {
-                                printLog(file.key)
+                                printLog("file found...")
+
                                 val request = ModelQuery.list(
                                     UserContactSharing::class.java,
                                     UserContactSharing.ID.eq(contactSharingWith.userId)
                                 )
                                 Amplify.API.query(request, { response ->
                                     if (response.hasData()) {
-
                                         response.data.forEach { user ->
-                                            printLog(user.name)
                                             dataListAdapterItem.add(
                                                 ModelReceivedContacts(
                                                     user,
@@ -242,6 +235,7 @@ class FragmentReceivedContacts : BaseFragment() {
                                                 )
                                             )
                                             ThreadUtils.runOnUiThread {
+                                                printLog("user added to rv")
                                                 adapterReceivedContacts.notifyDataSetChanged()
 
                                             }
@@ -252,9 +246,14 @@ class FragmentReceivedContacts : BaseFragment() {
                                                 showNoDataLayout()
                                                 hideLoading()
                                             } else {
+                                                hideLoading()
                                                 hideNoDataLayout()
-
                                             }
+                                        }
+                                    } else {
+                                        ThreadUtils.runOnUiThread {
+                                            hideLoading()
+                                            showNoDataLayout()
                                         }
                                     }
 
@@ -262,21 +261,18 @@ class FragmentReceivedContacts : BaseFragment() {
 
                                     ThreadUtils.runOnUiThread {
                                         hideLoading()
+                                        showNoDataLayout()
                                     }
                                 })
-
-
+                                isFileFound = true
+                                return@forEach
                             }
 
                         }
-
-                        ThreadUtils.runOnUiThread {
-                            if (dataListAdapterItem.isEmpty()) {
-                                showNoDataLayout()
+                        if (!isFileFound) {
+                            ThreadUtils.runOnUiThread {
                                 hideLoading()
-                            } else {
-                                hideNoDataLayout()
-
+                                showNoDataLayout()
                             }
                         }
 

@@ -253,11 +253,11 @@ class ContactsDownloadViewActivity : BaseActivity() {
         layoutBottomSheet.visibility = View.VISIBLE
 
 
-        if(listOfSelectedContacts.size<2){
+        if (listOfSelectedContacts.size < 2) {
             layoutBottomSheet.findViewById<TextView>(R.id.title).text =
                 "${listOfSelectedContacts.size.toString()} Contact Selected"
 
-        }else{
+        } else {
             layoutBottomSheet.findViewById<TextView>(R.id.title).text =
                 "${listOfSelectedContacts.size.toString()} Contacts Selected"
         }
@@ -348,32 +348,22 @@ class ContactsDownloadViewActivity : BaseActivity() {
 
 
                 }
-            } else {
-                printLog("number  already present")
-                hideLoading()
-                Toast.makeText(
-                    this@ContactsDownloadViewActivity,
-                    "Contacts Saved ",
-                    Toast.LENGTH_LONG
-                ).show()
-
             }
-
         }
 
-        printLog("all contacts saved...")
-        hideBottomSheet()
-        hideLoading()
-        listOfContacts.clear()
-        listOfSelectedContacts.clear()
-        listOfContacts.addAll(listOfAllLocalContacts)
-        adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+//        printLog("all contacts saved...")
+//        hideBottomSheet()
+//        hideLoading()
+//       // listOfContacts.clear()
+//        listOfSelectedContacts.clear()
+//      //  listOfContacts.addAll(listOfAllLocalContacts)
+//        adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
         Toast.makeText(
             this,
             "Contacts Saved ",
             Toast.LENGTH_SHORT
         ).show()
-
+        finish()
 
     }
 

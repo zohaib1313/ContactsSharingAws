@@ -113,9 +113,13 @@ class FragmentSharedContacts : BaseFragment() {
         return mBinding.root
     }
 
+
     private fun getListOfShredContacts() {
-        showLoading()
-        hideNoDataLayout()
+
+        ThreadUtils.runOnUiThread {
+            showLoading()
+            hideNoDataLayout()
+        }
         try {
 
             val request = ModelQuery.list(
@@ -126,45 +130,33 @@ class FragmentSharedContacts : BaseFragment() {
             Amplify.API
                 .query(
                     request, { response ->
-
+                        var userFound = false
                         ///received contacts
                         if (response.hasData() && !response.hasErrors()) {
                             printLog("no error in response and has data shared frag")
 
                             response.data.items.forEach { item ->
-
                                 if (item.userId == sessionManager.user.id) {
                                     //   dataListReceivedContacts.add(item)
-                                    ThreadUtils.runOnUiThread {
-                                        showLoading()
-                                        hideNoDataLayout()
-                                    }
-
                                     printLog(item.toString() + " item")
                                     getFileSizeAndAddToList(item)
-                                } else {
-                                    ThreadUtils.runOnUiThread {
-                                        hideLoading()
-                                        showNoDataLayout()
-                                    }
+                                    userFound = true
 
                                 }
                             }
-//                            if(dataListAdapterItem.isEmpty()){
-//                              ThreadUtils.runOnUiThread {
-//                                  hideLoading()
-//                                  showNoDataLayout()
-//                              }
-//                            }
-                            ThreadUtils.runOnUiThread() {
-                                hideLoading()
-                                if (dataListAdapterItem.isNotEmpty()) {
-                                    hideNoDataLayout()
-                                } else {
-                                    showNoDataLayout()
+                            if (!userFound) {
+                                ThreadUtils.runOnUiThread() {
+                                    printLog("outside thread for each...")
+                                    hideLoading()
+                                    if (dataListAdapterItem.isNotEmpty()) {
+                                        hideNoDataLayout()
+                                    } else {
+                                        showNoDataLayout()
+                                    }
+                                    adapterContactsShared.notifyDataSetChanged()
                                 }
-                                adapterContactsShared.notifyDataSetChanged()
                             }
+
 
                         } else {
                             //no data found
@@ -215,16 +207,19 @@ class FragmentSharedContacts : BaseFragment() {
             var folderName: String? = contactSharingWith.filePath.substringBeforeLast("/")
             folderName = folderName + "/"
 
-            printLog(contactSharingWith.filePath)
 
             try {
-
                 Amplify.Storage.list(
                     folderName.toString(),
                     { result ->
                         result.items.forEach { file ->
                             if (file.key == contactSharingWith.filePath) {
-                                printLog(file.key)
+                                printLog("shared filed added")
+                                ThreadUtils.runOnUiThread {
+                                    showLoading()
+                                    hideNoDataLayout()
+                                    adapterContactsShared.notifyDataSetChanged()
+                                }
                                 dataListAdapterItem.add(
                                     ModelSharingContactWith(
                                         contactSharingWith,
@@ -239,10 +234,11 @@ class FragmentSharedContacts : BaseFragment() {
                                 )
 
                             }
-
                         }
+
                         ThreadUtils.runOnUiThread() {
                             hideLoading()
+                            printLog("outside loop shared")
                             if (dataListAdapterItem.isNotEmpty()) {
                                 hideNoDataLayout()
                             } else {
@@ -252,7 +248,8 @@ class FragmentSharedContacts : BaseFragment() {
                         }
 
                     },
-                    { error -> printLog("error in getting size ${error.cause}")
+                    { error ->
+                        printLog("error in getting size ${error.cause}")
                         ThreadUtils.runOnUiThread() {
                             hideLoading()
                             if (dataListAdapterItem.isNotEmpty()) {
@@ -261,7 +258,8 @@ class FragmentSharedContacts : BaseFragment() {
                                 showNoDataLayout()
                             }
                             adapterContactsShared.notifyDataSetChanged()
-                        }}
+                        }
+                    }
                 )
 
             } catch (e: Exception) {
