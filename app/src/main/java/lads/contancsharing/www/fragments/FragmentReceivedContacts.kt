@@ -368,5 +368,14 @@ class FragmentReceivedContacts : BaseFragment() {
         mFragmentTransaction.commit()
     }
 
+    override fun onResume() {
+        super.onResume()
+        Helper.hideKeyboard(requireActivity())
+        dataListFilteredContacts.clear()
+        dataListAdapterItem.clear()
+        dataListAdapterItem.addAll(dataListAllContactsWith)
+        adapterReceivedContacts.notifyDataSetChanged()
 
+
+    }
 }

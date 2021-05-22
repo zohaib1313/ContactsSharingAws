@@ -35,6 +35,7 @@ import com.ferfalk.simplesearchview.SimpleSearchView
 import de.hdodenhof.circleimageview.CircleImageView
 import lads.contancsharing.www.R
 import lads.contancsharing.www.adapters.ContactListRecyclerViewAdapter
+import lads.contancsharing.www.api_calls.SmsUtils
 import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentContactsShareToBinding
 
@@ -347,6 +348,9 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
                         )
                     } else {
                         printLog("user does nt exists")
+                        SmsUtils.sendMessage(
+                            receiverNumber
+                        )
                         //user didnot exist
                         val userContactSharing = UserContactSharing.builder()
                             .name(receiverName)
@@ -464,7 +468,8 @@ class ContactsShareToFragment(var listOfContactsToShare: ArrayList<ContactsInfo>
                 val name =
                     contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
                 val number =
-                    contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).toString().replace("-","").replace(" ","")
+                    contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                        .toString().replace("-", "").replace(" ", "")
                 var image =
                     contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI))
 

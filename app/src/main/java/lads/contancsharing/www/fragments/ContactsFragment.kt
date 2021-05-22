@@ -27,8 +27,10 @@ import lads.contancsharing.www.R
 import lads.contancsharing.www.adapters.ContactListRecyclerViewAdapter
 import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.FragmentContactsBinding
+import lads.contancsharing.www.fcm.CustomNotification
 
 import lads.contancsharing.www.models.ContactsInfo
+import lads.contancsharing.www.utils.Helper
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -49,7 +51,7 @@ class ContactsFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-
+        Helper.hideKeyboard(requireActivity())
         initRv()
         checkSelectedContacts()
 
@@ -127,6 +129,7 @@ class ContactsFragment : BaseFragment() {
 
                 shareSelectedContacts(list)
             }
+         //  CustomNotification(requireContext()).CustomNotification()
 
         }
 
@@ -184,7 +187,7 @@ class ContactsFragment : BaseFragment() {
             listOfContacts.clear()
             listOfContacts.addAll(listOfFilteredContacts)
             adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
-        }else{
+        } else {
 
             showNoDataLayout()
 

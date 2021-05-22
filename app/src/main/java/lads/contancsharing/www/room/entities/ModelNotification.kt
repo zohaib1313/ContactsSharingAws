@@ -40,6 +40,8 @@ class ModelNotification(
     companion object {
         const val TABLE_NAME = "notificationTable"
         const val NOTIFICATION_ID = "id"
+
+
         const val FILE_PATH_URL = "filePath"
         const val MESSAGE = "message"
         const val FROM_USER_TOKEN = "formUserToken"

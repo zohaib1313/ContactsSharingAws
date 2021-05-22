@@ -357,4 +357,12 @@ class FragmentSharedContacts : BaseFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        Helper.hideKeyboard(requireActivity())
+        dataListFilteredContacts.clear()
+        dataListAdapterItem.clear()
+        dataListAdapterItem.addAll(dataListAllContactsWith)
+        adapterContactsShared.notifyDataSetChanged()
+    }
 }

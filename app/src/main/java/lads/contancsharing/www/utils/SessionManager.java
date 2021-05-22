@@ -115,7 +115,7 @@ public class SessionManager {
     }
 
     public String getToken() {
-        return pref.getString(AppConstant.PUSH_TOKEN, null);
+        return pref.getString(AppConstant.PUSH_TOKEN, "null");
     }
 
 }

@@ -23,14 +23,16 @@ import androidx.core.content.ContextCompat
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.Callback
 import com.amazonaws.mobile.client.UserStateDetails
+import com.amplifyframework.api.graphql.model.ModelMutation
+import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.Amplify.Auth
+import com.amplifyframework.datastore.generated.model.UserContactSharing
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
-import lads.contancsharing.www.BuildConfig
 
 import lads.contancsharing.www.R
 import lads.contancsharing.www.models.ContactsInfo
@@ -311,7 +313,7 @@ object Helper {
         return Date().time.toString()
     }
 
-    fun saveDeviceTokenInSharedPref(context: Context) {
+    fun refreshFcmToken(context: Context) {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.d(
@@ -324,13 +326,48 @@ object Helper {
 
             // Get new FCM registration token
             val token = task.result
-
-            SessionManager.getInstance(context).updateToken(token.toString())
-            Log.d("com.lads.contactsharing", "fcm token ===${token.toString()}")
+            SessionManager.getInstance(context)?.let {
+                it.updateToken(token.toString())
+                if (it.user != null) {
+                    updateUserInAwsForFcmToken(token.toString(), context)
+                }
+            }
+            Log.d("com.lads.contactsharing", "fcm token refreshed ===${token.toString()}")
             //update in Aws app sync
 
 
         })
+    }
+
+    private fun updateUserInAwsForFcmToken(token: String, context: Context) {
+
+        val sessionUser = SessionManager.getInstance(context.applicationContext).user
+        sessionUser?.let {
+            val userContactSharingBuilder = UserContactSharing.builder()
+                .name(sessionUser.name)
+                .phone(sessionUser.phone)
+                .deviceToken(token)
+                .countryCode(sessionUser.countryCode)
+                .image(sessionUser.image)
+                .id(sessionUser.id)
+            val userFinal = userContactSharingBuilder.build()
+
+            Amplify.API.mutate(
+                ModelMutation.update(userFinal),
+                {
+                    if (it.hasErrors()) {
+                        Log.d("com.lads.contactsharing", "fcm token update failed ")
+
+                    } else {
+                        SessionManager.getInstance(context.applicationContext)
+                            .updateUserSession(userFinal)
+                    }
+                },
+                {
+                    Log.d("com.lads.contactsharing", "fcm token update failed ")
+                }
+            )
+        }
     }
 
     fun sessionRefresh() {
@@ -348,7 +385,7 @@ object Helper {
                         "securetoken.google.com/contactssharing-d144b",
                         idToken, object : Callback<UserStateDetails?> {
                             override fun onResult(userStateDetails: UserStateDetails?) {
-                                Log.d("com.lads.contactsharing", "Token refreshed...")
+                                Log.d("com.lads.contactsharing", "Aws Token refreshed...")
 
                             }
 

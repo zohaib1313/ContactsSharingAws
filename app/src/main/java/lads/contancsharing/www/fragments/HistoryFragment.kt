@@ -22,6 +22,7 @@ import lads.contancsharing.www.databinding.FragmentHistoryBinding
 
 import lads.contancsharing.www.models.FragmentsTitleFrag
 import lads.contancsharing.www.models.MessageEvent
+import lads.contancsharing.www.utils.Helper
 import org.greenrobot.eventbus.EventBus
 
 
@@ -43,7 +44,7 @@ class HistoryFragment : BaseFragment() {
     ): View {
         mBinding = FragmentHistoryBinding.inflate(layoutInflater)
 
-
+        Helper.hideKeyboard(requireActivity())
         setupViewPager()
         setSelectedTab(0)
         mBinding.searchView.setTabLayout(mBinding.tabLayout)

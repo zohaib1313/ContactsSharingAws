@@ -229,6 +229,7 @@ class VerifyOtpFragment(
 
                     printLog("id= ${mobileClient.identityId}")
                     printLog("userDetails= ${userStateDetails?.details}")
+
                     changeFragment(ProfileInfoFragment.newInstance(0), true);
                     ThreadUtils.runOnUiThread {
                         hideLoading()

@@ -10,7 +10,8 @@ data class ContactsInfo(
     var number: String,
     var photo: String,
     var selected: Boolean = false,
-    var drawable: Drawable
+    var drawable: Drawable,
+    var isAlreadyPresent: Boolean = false
 
 
 )

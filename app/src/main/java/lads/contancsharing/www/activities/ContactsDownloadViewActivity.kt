@@ -22,7 +22,6 @@ import com.amplifyframework.datastore.generated.model.ContactSharingWith
 import com.amplifyframework.storage.options.StorageDownloadFileOptions
 import com.bumptech.glide.Glide
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import com.google.gson.Gson
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_contacts_download_view.*
@@ -32,7 +31,6 @@ import lads.contancsharing.www.callBacks.OnItemClickListener
 import lads.contancsharing.www.databinding.ActivityContactsDownloadViewBinding
 import lads.contancsharing.www.models.ContactsInfo
 
-import lads.contancsharing.www.utils.AppConstant
 import lads.contancsharing.www.utils.Helper
 import java.io.File
 import java.lang.Exception
@@ -50,7 +48,7 @@ class ContactsDownloadViewActivity : BaseActivity() {
     private var senderUser: ContactSharingWith? = null
     private lateinit var rvContacts: RecyclerView
     lateinit var adapterContactListRecyclerViewAdapter: ContactListRecyclerViewAdapter
-    var listOfContacts = ArrayList<ContactsInfo>()
+    var listOfAdapterContacts = ArrayList<ContactsInfo>()
     var listOfAllLocalContacts = ArrayList<ContactsInfo>()
 
     var listOfSelectedContacts = ArrayList<ContactsInfo>()
@@ -60,6 +58,7 @@ class ContactsDownloadViewActivity : BaseActivity() {
         mBinding = ActivityContactsDownloadViewBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         initRv()
+        checkPermission()
         layoutBottomSheet = mBinding.bottomSheett
         loadingLayout = mBinding.loadingLayout.rlLoading
 
@@ -99,37 +98,30 @@ class ContactsDownloadViewActivity : BaseActivity() {
 //                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(mBinding.ivUser)
         }
-        intent.getStringExtra("keyFilePath")?.let {
-            if (alreadyExists(it)) {
-                printLog("file already exists")
-                readFiles(it)
-
-            } else {
-                printLog("file doesnot exists")
-                downloadCsv(it)
-            }
-        }
 
 
     }
 
     private fun initRv() {
         listOfAllLocalContacts.clear()
-
-
-
-
         rvContacts = mBinding.rvContacts
         rvContacts.layoutManager = LinearLayoutManager(this@ContactsDownloadViewActivity)
         rvContacts.setHasFixedSize(true)
         adapterContactListRecyclerViewAdapter =
-            ContactListRecyclerViewAdapter(this@ContactsDownloadViewActivity, listOfContacts, false)
+            ContactListRecyclerViewAdapter(
+                this@ContactsDownloadViewActivity,
+                listOfAdapterContacts,
+                false
+            )
         adapterContactListRecyclerViewAdapter.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int, character: String) {
-                listOfContacts[position].selected = !listOfContacts[position].selected
-                adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
-                checkBottomSheet()
-
+                val contact = listOfAdapterContacts[position]
+                if (!contact.isAlreadyPresent) {
+                    contact.selected =
+                        !contact.selected
+                    adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+                    checkBottomSheet()
+                }
             }
         })
         rvContacts.adapter = adapterContactListRecyclerViewAdapter
@@ -139,7 +131,7 @@ class ContactsDownloadViewActivity : BaseActivity() {
     private fun checkBottomSheet() {
         listOfSelectedContacts.clear()
 
-        for (contact in listOfContacts) {
+        for (contact in listOfAdapterContacts) {
             if (contact.selected) {
                 listOfSelectedContacts.add(contact)
             }
@@ -175,22 +167,22 @@ class ContactsDownloadViewActivity : BaseActivity() {
                 listOfContactsNameNumber.add(col.toString())
 
             }
-            listOfContacts.clear()
+            listOfAdapterContacts.clear()
             adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
 
             printLog(listOfContactsNameNumber.toString())
             var i = 0
             while (i < listOfContactsNameNumber.size) {
-
-                listOfContacts.add(
-                    ContactsInfo(
-                        listOfContactsNameNumber[i++].replace("[", "").replace("]", ""),
-                        listOfContactsNameNumber[i++].replace("[", "").replace("]", ""),
-                        "",
-                        false,
-                        getRandomDrawable()
-                    )
+                val contactModel = ContactsInfo(
+                    listOfContactsNameNumber[i++].replace("[", "").replace("]", ""),
+                    listOfContactsNameNumber[i++].replace("[", "").replace("]", ""),
+                    "",
+                    false,
+                    getRandomDrawable(), false
                 )
+                contactModel.isAlreadyPresent = checkIfAlreadyPresent(contactModel)
+
+                listOfAdapterContacts.add(contactModel)
                 adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
             }
 
@@ -249,7 +241,7 @@ class ContactsDownloadViewActivity : BaseActivity() {
     }
 
 
-    fun showBottomSheet() {
+    private fun showBottomSheet() {
         layoutBottomSheet.visibility = View.VISIBLE
 
 
@@ -263,20 +255,22 @@ class ContactsDownloadViewActivity : BaseActivity() {
         }
 
 
-
-
-
-
-
-
-
         layoutBottomSheet.findViewById<ImageView>(R.id.btnSave).setOnClickListener {
 
+            if (listOfSelectedContacts.isEmpty()) {
+                Toast.makeText(
+                    this@ContactsDownloadViewActivity,
+                    "No contact(s) to save",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            saveToContacts()
             showLoading()
-            checkPermission()
+
         }
         layoutBottomSheet.findViewById<TextView>(R.id.tvCancel).setOnClickListener {
-            listOfContacts.forEach { item ->
+            listOfAdapterContacts.forEach { item ->
                 item.selected = false
             }
             adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
@@ -351,13 +345,7 @@ class ContactsDownloadViewActivity : BaseActivity() {
             }
         }
 
-//        printLog("all contacts saved...")
-//        hideBottomSheet()
-//        hideLoading()
-//       // listOfContacts.clear()
-//        listOfSelectedContacts.clear()
-//      //  listOfContacts.addAll(listOfAllLocalContacts)
-//        adapterContactListRecyclerViewAdapter.notifyDataSetChanged()
+
         Toast.makeText(
             this,
             "Contacts Saved ",
@@ -376,13 +364,14 @@ class ContactsDownloadViewActivity : BaseActivity() {
         for (localContact in listOfAllLocalContacts) {
 
             printLog(localContact.toString())
+            printLog(contact.toString())
+
             result = localContact.name == contact.name && localContact.number == contact.number
             if (result) {
+                printLog("number already present")
                 break
             }
         }
-
-
         return result
     }
 
@@ -391,13 +380,22 @@ class ContactsDownloadViewActivity : BaseActivity() {
 
     }
 
-    fun checkPermission() {
+    private fun checkPermission() {
 
         val permissionListener: PermissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
-
+                printLog("permission granted")
                 getContactsFromContactsList()
-                saveToContacts()
+                intent.getStringExtra("keyFilePath")?.let {
+                    if (alreadyExists(it)) {
+                        printLog("file already exists")
+                        readFiles(it)
+
+                    } else {
+                        printLog("file doesnot exists")
+                        downloadCsv(it)
+                    }
+                }
 
             }
 
@@ -406,8 +404,7 @@ class ContactsDownloadViewActivity : BaseActivity() {
                     this@ContactsDownloadViewActivity,
                     "Please allow the permissions from Settings to Use this Application",
                     Toast.LENGTH_LONG
-                )
-                    .show()
+                ).show()
 
             }
         }

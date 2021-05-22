@@ -1,10 +1,19 @@
 package lads.contancsharing.www.activities
 
+
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.RemoteViews
 import androidx.appcompat.widget.TooltipCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -19,12 +28,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 import lads.contancsharing.www.R
 import lads.contancsharing.www.databinding.ActivityMainBinding
-
-
 import lads.contancsharing.www.fragments.ContactsFragment
 import lads.contancsharing.www.fragments.HistoryFragment
-import lads.contancsharing.www.fragments.ProfileFragment
 import lads.contancsharing.www.fragments.NotificationFragment
+import lads.contancsharing.www.fragments.ProfileFragment
+import lads.contancsharing.www.utils.AppConstant
 import lads.contancsharing.www.utils.Helper
 
 class MainActivity : BaseActivity() {
@@ -33,37 +41,42 @@ class MainActivity : BaseActivity() {
 
     companion object {
         lateinit var bottomNavView: BottomNavigationView
-        val TAG: String = MainActivity::class.java.simpleName
+
         private var pinpointManager: PinpointManager? = null
         fun getPinpointManager(applicationContext: Context?): PinpointManager? {
             if (pinpointManager == null) {
-                val awsConfig = AWSConfiguration(applicationContext)
-                AWSMobileClient.getInstance()
-                    .initialize(
+                try {
+                    val awsConfig = AWSConfiguration(applicationContext)
+                    AWSMobileClient.getInstance()
+                        .initialize(
+                            applicationContext,
+                            awsConfig,
+                            object : Callback<UserStateDetails?> {
+
+                                override fun onError(e: Exception?) {
+                                    Log.e("INIT", "Initialization error.", e)
+                                }
+
+                                override fun onResult(result: UserStateDetails?) {
+                                    Log.i("INIT", result?.userState.toString())
+                                }
+                            })
+                    val pinpointConfig = PinpointConfiguration(
                         applicationContext,
-                        awsConfig,
-                        object : Callback<UserStateDetails?> {
+                        AWSMobileClient.getInstance(),
+                        awsConfig
+                    )
+                    pinpointManager = PinpointManager(pinpointConfig)
+                    val token: String = FirebaseMessaging.getInstance().token.toString()
+                    pinpointManager!!.notificationClient.registerDeviceToken(token)
 
-                            override fun onError(e: Exception?) {
-                                Log.e("INIT", "Initialization error.", e)
-                            }
-
-                            override fun onResult(result: UserStateDetails?) {
-                                Log.i("INIT", result?.userState.toString())
-                            }
-                        })
-                val pinpointConfig = PinpointConfiguration(
-                    applicationContext,
-                    AWSMobileClient.getInstance(),
-                    awsConfig
-                )
-                pinpointManager = PinpointManager(pinpointConfig)
-                val token: String = FirebaseMessaging.getInstance().token.toString()
-                pinpointManager!!.notificationClient.registerDeviceToken(token)
-
+                } catch (e: Exception) {
+                }
             }
             return pinpointManager
         }
+
+
     }
 
 
@@ -75,14 +88,19 @@ class MainActivity : BaseActivity() {
         bottomNavView = mBinding.bottomNavigationView
         bottomNavView.setOnNavigationItemSelectedListener { onBottomNavClick(it) }
         changeFragment(ContactsFragment.newInstance(0), false)
+
         if (sessionManager.user != null) {
 
             Helper.sessionRefresh()
+            Helper.refreshFcmToken(this@MainActivity)
+
         }
 
         bottomNavView.menu.forEach { item ->
             TooltipCompat.setTooltipText(findViewById(item.itemId), null)
         }
+
+
     }
 
     var activeTabId = 0
@@ -134,5 +152,7 @@ class MainActivity : BaseActivity() {
         if (needToAddBackstack) mFragmentTransaction.addToBackStack(null)
         mFragmentTransaction.commit()
     }
+
+
 
 }

@@ -48,6 +48,7 @@ class ProfileInfoFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        printLog("profile info fragment")
         mBinding = FragmentProfileInfoBinding.inflate(layoutInflater)
         loadingLayout = mBinding.loadingLayout.rlLoading
         firebaseAuth = FirebaseAuth.getInstance()
@@ -57,9 +58,9 @@ class ProfileInfoFragment : BaseFragment() {
 
 
         ////saving token in sharedPref
-        Helper.saveDeviceTokenInSharedPref(requireContext())
+        Helper.refreshFcmToken(requireContext())
         getDeviceToken()
-
+        checkIfUserExists()
 
         mBinding.btnDone.setOnClickListener {
             if (mBinding.textView3.text.isNullOrEmpty()) {
@@ -115,7 +116,7 @@ class ProfileInfoFragment : BaseFragment() {
                 }
         }
 
-        checkIfUserExists()
+
         return mBinding.root
     }
 
@@ -124,12 +125,13 @@ class ProfileInfoFragment : BaseFragment() {
         val request =
             ModelQuery.list(UserContactSharing::class.java)
         Amplify.API.query(request, { response ->
-            if (response.hasData() && !response.hasErrors()) {
-
+            if (response.hasData()) {
+                printLog("response has data and checking user..")
+                var userFound = false
                 response.data.items.forEach { userO ->
                     if (userO.phone.equals(userPhoneNumber.toString())) {
                         runOnUiThread {
-                            printLog("user already exists")
+                            printLog("user already exists ${userO.toString()}")
                             hideLoading()
                             userExists = true
                             userContactSharing!!.id(userO.id)
@@ -146,6 +148,7 @@ class ProfileInfoFragment : BaseFragment() {
                                     .into(mBinding.circleImageView)
                             }
                         }
+                        userFound = true
                         return@forEach
                     } else {
                         printLog("user does not  exists already")
@@ -154,14 +157,22 @@ class ProfileInfoFragment : BaseFragment() {
                         }
                     }
                 }
-
+                if (!userFound) {
+                    printLog("No user exists")
+                    runOnUiThread {
+                        hideLoading()
+                    }
+                }
             } else {
 ///error
+                printLog("response has no data error")
                 runOnUiThread {
                     hideLoading()
                 }
             }
         }, {
+            printLog("checking user exception ${it.cause}")
+
             runOnUiThread {
                 hideLoading()
             }
@@ -173,7 +184,7 @@ class ProfileInfoFragment : BaseFragment() {
         deviceToken = if (sessionManager.token != null) {
             sessionManager.token
         } else {
-            Helper.saveDeviceTokenInSharedPref(requireContext())
+            Helper.refreshFcmToken(requireContext())
             "null"
         }
     }

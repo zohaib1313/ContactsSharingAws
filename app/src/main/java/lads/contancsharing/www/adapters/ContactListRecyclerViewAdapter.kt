@@ -70,8 +70,14 @@ class ContactListRecyclerViewAdapter(
                 } else {
                     binding.radioBtnSelect.background =
                         getDrawable(mContext, R.drawable.checkbox_not_checked)
-
                 }
+
+                if (isAlreadyPresent){
+                    binding.radioBtnSelect.background= getDrawable(mContext,R.drawable.ic_check_green)
+                }
+
+
+
 
 
                 try {

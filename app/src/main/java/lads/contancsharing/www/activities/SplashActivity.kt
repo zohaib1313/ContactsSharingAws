@@ -14,6 +14,7 @@ import com.amazonaws.mobile.client.UserStateDetails
 import com.amplifyframework.core.Amplify
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import lads.contancsharing.www.api_calls.SmsUtils
 import lads.contancsharing.www.databinding.ActivitySplashBinding
 import lads.contancsharing.www.fragments.ProfileInfoFragment
 
@@ -21,7 +22,7 @@ import lads.contancsharing.www.utils.AppConstant
 import lads.contancsharing.www.utils.Helper
 
 
-class SplashActivity :BaseActivity() {
+class SplashActivity : BaseActivity() {
 
     lateinit var mBinding: ActivitySplashBinding
     override fun onCreate(savedInstanceState: Bundle?) {
